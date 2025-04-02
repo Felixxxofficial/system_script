@@ -1,0 +1,26 @@
+# Image files
+*.jpg
+*.jpeg
+*.png
+*.gif
+*.bmp
+*.tiff
+*.ico
+*.svg
+*.webp
+
+# PDF files
+*.pdf
+
+# Video files
+*.mp4
+*.mov
+*.avi
+*.wmv
+*.flv
+*.mkv
+*.webm
+
+# Specific folder
+C:/Users/felix/Scripts/Obsidian/AI/note-companion-master/
+/Obsidian/AI/note-companion-master/

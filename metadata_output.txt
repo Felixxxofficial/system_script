@@ -1,0 +1,277 @@
+=== All Metadata ===
+SourceFile: C:/Users/felix/OFM/Reels/Lightroom/IMG_4071.jpg
+ExifTool:ExifToolVersion: 13.25
+File:FileName: IMG_4071.jpg
+File:Directory: C:/Users/felix/OFM/Reels/Lightroom
+File:FileSize: 635348
+File:FileModifyDate: 2025:03:29 07:16:34+01:00
+File:FileAccessDate: 2025:03:29 09:17:17+01:00
+File:FileCreateDate: 2025:03:29 07:16:34+01:00
+File:FilePermissions: 100666
+File:FileType: JPEG
+File:FileTypeExtension: JPG
+File:MIMEType: image/jpeg
+File:ExifByteOrder: II
+File:ImageWidth: 2144
+File:ImageHeight: 3808
+File:EncodingProcess: 0
+File:BitsPerSample: 8
+File:ColorComponents: 3
+File:YCbCrSubSampling: 1 1
+EXIF:Make: Apple
+EXIF:Model: iPhone 13 Pro
+EXIF:Orientation: 1
+EXIF:XResolution: 72
+EXIF:YResolution: 72
+EXIF:ResolutionUnit: 2
+EXIF:Software: 18.0
+EXIF:ModifyDate: 2025:03:29 06:16:34
+EXIF:HostComputer: iPhone 13 Pro
+EXIF:ExposureTime: 0.01
+EXIF:FNumber: 1.5
+EXIF:ExposureProgram: 2
+EXIF:ISO: 91
+EXIF:ExifVersion: 0232
+EXIF:DateTimeOriginal: 2025:03:29 06:16:34
+EXIF:CreateDate: 2025:03:29 06:16:34
+EXIF:OffsetTime: -08:00
+EXIF:OffsetTimeOriginal: -08:00
+EXIF:OffsetTimeDigitized: -08:00
+EXIF:ShutterSpeedValue: 0.0100000003172862
+EXIF:ApertureValue: 1.49999999769062
+EXIF:BrightnessValue: 9.316066725
+EXIF:ExposureCompensation: 0
+EXIF:MeteringMode: 5
+EXIF:Flash: 16
+EXIF:FocalLength: 5.7
+EXIF:SubSecTimeOriginal: 208
+EXIF:SubSecTimeDigitized: 208
+EXIF:ColorSpace: 65535
+EXIF:ExifImageWidth: 3024
+EXIF:ExifImageHeight: 4032
+EXIF:SensingMethod: 2
+EXIF:SceneType: 1
+EXIF:FocalLengthIn35mmFormat: 26
+EXIF:LensInfo: 1.570000052 9 1.5 2.8
+EXIF:LensMake: Apple
+EXIF:LensModel: iPhone 13 Pro back triple camera 5.7mm f/1.5
+EXIF:GPSVersionID: 2 3 0 0
+EXIF:GPSLatitudeRef: N
+EXIF:GPSLatitude: 34.0828231219639
+EXIF:GPSLongitudeRef: W
+EXIF:GPSLongitude: 118.292408900083
+EXIF:GPSAltitudeRef: 0
+EXIF:GPSAltitude: 56
+EXIF:GPSTimeStamp: 06:16:34
+EXIF:GPSDateStamp: 2025:03:29
+EXIF:GPSHPositioningError: 8
+EXIF:Compression: 6
+EXIF:ThumbnailOffset: 1100
+EXIF:ThumbnailLength: 11671
+EXIF:ThumbnailImage: (Binary data 11671 bytes, use -b option to extract)
+Photoshop:XResolution: 240
+Photoshop:DisplayedUnitsX: 1
+Photoshop:YResolution: 240
+Photoshop:DisplayedUnitsY: 1
+Photoshop:PhotoshopThumbnail: (Binary data 11671 bytes, use -b option to extract)
+ICC_Profile:ProfileCMMType: Lino
+ICC_Profile:ProfileVersion: 528
+ICC_Profile:ProfileClass: mntr
+ICC_Profile:ColorSpaceData: RGB 
+ICC_Profile:ProfileConnectionSpace: XYZ 
+ICC_Profile:ProfileDateTime: 1998:02:09 06:49:00
+ICC_Profile:ProfileFileSignature: acsp
+ICC_Profile:PrimaryPlatform: MSFT
+ICC_Profile:CMMFlags: 0
+ICC_Profile:DeviceManufacturer: IEC 
+ICC_Profile:DeviceModel: sRGB
+ICC_Profile:DeviceAttributes: 0 0
+ICC_Profile:RenderingIntent: 0
+ICC_Profile:ConnectionSpaceIlluminant: 0.9642 1 0.82491
+ICC_Profile:ProfileCreator: HP  
+ICC_Profile:ProfileID: 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+ICC_Profile:ProfileCopyright: Copyright (c) 1998 Hewlett-Packard Company
+ICC_Profile:ProfileDescription: sRGB IEC61966-2.1
+ICC_Profile:MediaWhitePoint: 0.95045 1 1.08905
+ICC_Profile:MediaBlackPoint: 0 0 0
+ICC_Profile:RedMatrixColumn: 0.43607 0.22249 0.01392
+ICC_Profile:GreenMatrixColumn: 0.38515 0.71687 0.09708
+ICC_Profile:BlueMatrixColumn: 0.14307 0.06061 0.7141
+ICC_Profile:DeviceMfgDesc: IEC http://www.iec.ch
+ICC_Profile:DeviceModelDesc: IEC 61966-2.1 Default RGB colour space - sRGB
+ICC_Profile:ViewingCondDesc: Reference Viewing Condition in IEC61966-2.1
+ICC_Profile:ViewingCondIlluminant: 19.6445 20.3718 16.8089
+ICC_Profile:ViewingCondSurround: 3.92889 4.07439 3.36179
+ICC_Profile:ViewingCondIlluminantType: 1
+ICC_Profile:Luminance: 76.03647 80 87.12462
+ICC_Profile:MeasurementObserver: 1
+ICC_Profile:MeasurementBacking: 0 0 0
+ICC_Profile:MeasurementGeometry: 0
+ICC_Profile:MeasurementFlare: 0.00999
+ICC_Profile:MeasurementIlluminant: 2
+ICC_Profile:Technology: CRT 
+ICC_Profile:RedTRC: (Binary data 2060 bytes, use -b option to extract)
+ICC_Profile:GreenTRC: (Binary data 2060 bytes, use -b option to extract)
+ICC_Profile:BlueTRC: (Binary data 2060 bytes, use -b option to extract)
+XMP:XMPToolkit: XMP Core 6.0.0
+XMP:Format: image/jpeg
+XMP:DateCreated: 2025:03:29 06:16:34
+XMP:CreateDate: 2025:03:29 06:16:34
+XMP:CreatorTool: 18.0
+XMP:MetadataDate: 2025:03:29 09:09:06+01:00
+XMP:ModifyDate: 2025:03:29 06:16:34
+XMP:DerivedFromDocumentID: AB6F8A183ACF9D4BBC2BC90A47C40459
+XMP:DerivedFromOriginalDocumentID: AB6F8A183ACF9D4BBC2BC90A47C40459
+XMP:DocumentID: xmp.did:c9bcaf28-a860-114d-bc2f-180375de2aed
+XMP:HistoryAction: ['derived', 'saved']
+XMP:HistoryParameters: converted from image/png to image/jpeg, saved to new location
+XMP:HistoryChanged: /
+XMP:HistoryInstanceID: xmp.iid:c9bcaf28-a860-114d-bc2f-180375de2aed
+XMP:HistorySoftwareAgent: Adobe Photoshop Lightroom Classic 11.2 (Windows)
+XMP:HistoryWhen: 2025:03:29 09:09:06+01:00
+XMP:InstanceID: xmp.iid:c9bcaf28-a860-114d-bc2f-180375de2aed
+XMP:OriginalDocumentID: AB6F8A183ACF9D4BBC2BC90A47C40459
+XMP:PreservedFileName: Skin_00021_55.png
+XMP:AlreadyApplied: True
+XMP:AutoLateralCA: 0
+XMP:Blacks2012: -35
+XMP:BlueHue: 0
+XMP:BlueSaturation: 0
+XMP:CameraProfile: Embedded
+XMP:CameraProfileDigest: 54650A341B5B5CCAE8442D0B43A92BCE
+XMP:Clarity2012: +28
+XMP:ColorGradeBlending: 50
+XMP:ColorGradeGlobalHue: 0
+XMP:ColorGradeGlobalLum: 0
+XMP:ColorGradeGlobalSat: 0
+XMP:ColorGradeHighlightLum: 0
+XMP:ColorGradeMidtoneHue: 324
+XMP:ColorGradeMidtoneLum: 0
+XMP:ColorGradeMidtoneSat: 0
+XMP:ColorGradeShadowLum: 0
+XMP:ColorNoiseReduction: 0
+XMP:Contrast2012: 0
+XMP:ConvertToGrayscale: False
+XMP:CropAngle: 0
+XMP:CropBottom: 1
+XMP:CropConstrainToWarp: 0
+XMP:CropLeft: 0
+XMP:CropRight: 1
+XMP:CropTop: 0
+XMP:DefringeGreenAmount: 0
+XMP:DefringeGreenHueHi: 60
+XMP:DefringeGreenHueLo: 40
+XMP:DefringePurpleAmount: 0
+XMP:DefringePurpleHueHi: 70
+XMP:DefringePurpleHueLo: 30
+XMP:Dehaze: 0
+XMP:Exposure2012: 0.0
+XMP:GrainAmount: 3
+XMP:GrainFrequency: 50
+XMP:GrainSize: 25
+XMP:GreenHue: 0
+XMP:GreenSaturation: 0
+XMP:HasCrop: False
+XMP:HasSettings: True
+XMP:Highlights2012: 0
+XMP:HueAdjustmentAqua: 0
+XMP:HueAdjustmentBlue: 0
+XMP:HueAdjustmentGreen: 0
+XMP:HueAdjustmentMagenta: 0
+XMP:HueAdjustmentOrange: 0
+XMP:HueAdjustmentPurple: 0
+XMP:HueAdjustmentRed: 0
+XMP:HueAdjustmentYellow: 0
+XMP:IncrementalTemperature: -5
+XMP:IncrementalTint: +11
+XMP:LensManualDistortionAmount: 0
+XMP:LensProfileEnable: 0
+XMP:LuminanceAdjustmentAqua: 0
+XMP:LuminanceAdjustmentBlue: 0
+XMP:LuminanceAdjustmentGreen: 0
+XMP:LuminanceAdjustmentMagenta: 0
+XMP:LuminanceAdjustmentOrange: 0
+XMP:LuminanceAdjustmentPurple: 0
+XMP:LuminanceAdjustmentRed: 0
+XMP:LuminanceAdjustmentYellow: 0
+XMP:LuminanceSmoothing: 0
+XMP:OverrideLookVignette: True
+XMP:ParametricDarks: 0
+XMP:ParametricHighlightSplit: 75
+XMP:ParametricHighlights: 0
+XMP:ParametricLights: 0
+XMP:ParametricMidtoneSplit: 50
+XMP:ParametricShadowSplit: 25
+XMP:ParametricShadows: 0
+XMP:PerspectiveAspect: 0
+XMP:PerspectiveHorizontal: 0
+XMP:PerspectiveRotate: 0.0
+XMP:PerspectiveScale: 100
+XMP:PerspectiveUpright: 0
+XMP:PerspectiveVertical: 0
+XMP:PerspectiveX: 0.0
+XMP:PerspectiveY: 0.0
+XMP:PostCropVignetteAmount: -18
+XMP:PostCropVignetteFeather: 50
+XMP:PostCropVignetteHighlightContrast: 0
+XMP:PostCropVignetteMidpoint: 50
+XMP:PostCropVignetteRoundness: 0
+XMP:PostCropVignetteStyle: 1
+XMP:ProcessVersion: 11.0
+XMP:RawFileName: 
+XMP:RedHue: 0
+XMP:RedSaturation: 0
+XMP:Saturation: -11
+XMP:SaturationAdjustmentAqua: 0
+XMP:SaturationAdjustmentBlue: 0
+XMP:SaturationAdjustmentGreen: 0
+XMP:SaturationAdjustmentMagenta: 0
+XMP:SaturationAdjustmentOrange: 0
+XMP:SaturationAdjustmentPurple: 0
+XMP:SaturationAdjustmentRed: 0
+XMP:SaturationAdjustmentYellow: 0
+XMP:ShadowTint: 0
+XMP:Shadows2012: 0
+XMP:SharpenDetail: 61
+XMP:SharpenEdgeMasking: 36
+XMP:SharpenRadius: +1.6
+XMP:Sharpness: 20
+XMP:SplitToningBalance: 0
+XMP:SplitToningHighlightHue: 0
+XMP:SplitToningHighlightSaturation: 0
+XMP:SplitToningShadowHue: 0
+XMP:SplitToningShadowSaturation: 0
+XMP:Texture: +14
+XMP:ToneCurveName2012: Linear
+XMP:ToneCurvePV2012: ['0, 0', '255, 255']
+XMP:ToneCurvePV2012Blue: ['0, 0', '255, 255']
+XMP:ToneCurvePV2012Green: ['0, 0', '255, 255']
+XMP:ToneCurvePV2012Red: ['0, 0', '255, 255']
+XMP:Version: 14.2
+XMP:Vibrance: 0
+XMP:VignetteAmount: 0
+XMP:WhiteBalance: Custom
+XMP:Whites2012: +35
+APP14:DCTEncodeVersion: 100
+APP14:APP14Flags0: 49152
+APP14:APP14Flags1: 0
+APP14:ColorTransform: 1
+Composite:Aperture: 1.5
+Composite:ImageSize: 2144 3808
+Composite:Megapixels: 8.164352
+Composite:ScaleFactor35efl: 4.56140350877193
+Composite:ShutterSpeed: 0.01
+Composite:SubSecCreateDate: 2025:03:29 06:16:34.208-08:00
+Composite:SubSecDateTimeOriginal: 2025:03:29 06:16:34.208-08:00
+Composite:SubSecModifyDate: 2025:03:29 06:16:34-08:00
+Composite:GPSAltitude: 56
+Composite:GPSDateTime: 2025:03:29 06:16:34Z
+Composite:GPSLatitude: 34.0828231219639
+Composite:GPSLongitude: -118.292408900083
+Composite:CircleOfConfusion: 0.0065870648301746
+Composite:FOV: 69.3903656740024
+Composite:FocalLength35efl: 26
+Composite:GPSPosition: 34.0828231219639 -118.292408900083
+Composite:HyperfocalDistance: 3.28826276322316
+Composite:LightValue: 7.94984274079307
+Composite:LensID: iPhone 13 Pro back triple camera 5.7mm f/1.5
