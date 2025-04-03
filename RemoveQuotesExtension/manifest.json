@@ -1,13 +1,23 @@
 {
-    "manifest_version": 3,
-    "name": "Remove Quotes on Copy for NocoDB",
-    "version": "1.0",
-    "description": "Removes double quotes from copied text and makes URLs clickable on noco.bvmodel.cloud",
-    "permissions": ["clipboardRead", "clipboardWrite", "dom"],
-    "content_scripts": [
-      {
-        "matches": ["http://noco.bvmodel.cloud/*", "https://noco.bvmodel.cloud/*"],
-        "js": ["content.js"]
-      }
-    ]
+  "manifest_version": 3,
+  "name": "Remove Quotes on Copy for NocoDB",
+  "version": "1.0",
+  "description": "Removes quotes and opens URLs when copying text in NocoDB",
+  "permissions": [
+    "clipboardRead",
+    "clipboardWrite",
+    "storage"
+  ],
+  "content_scripts": [
+    {
+      "matches": ["http://noco.bvmodel.cloud/*", "https://noco.bvmodel.cloud/*"],
+      "js": ["content.js"]
+    }
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_popup": "popup.html"
   }
+}

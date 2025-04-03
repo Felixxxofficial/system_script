@@ -1,0 +1,634 @@
+// Function to remove quotes and open URLs when copying
+function initializeExtension() {
+  try {
+    console.log("RemoveQuotesExtension: Initializing extension");
+    
+    // Add debug button to the page for testing
+    if (window.location.href.includes('noco.bvmodel.cloud')) {
+      const debugContainer = document.createElement('div');
+      debugContainer.style.position = 'fixed';
+      debugContainer.style.bottom = '10px';
+      debugContainer.style.right = '10px';
+      debugContainer.style.zIndex = '9999';
+      debugContainer.style.background = 'rgba(0,0,0,0.7)';
+      debugContainer.style.padding = '5px';
+      debugContainer.style.borderRadius = '5px';
+      
+      const debugButton = document.createElement('button');
+      debugButton.textContent = 'Test Extension';
+      debugButton.style.padding = '5px 10px';
+      debugButton.style.cursor = 'pointer';
+      
+      debugButton.addEventListener('click', () => {
+        console.log('RemoveQuotesExtension: Test button clicked');
+        
+        // Create a test element with the text we want to copy
+        const testText = '"This is a test with quotes and a URL: https://example.com"';
+        const tempElement = document.createElement('div');
+        tempElement.textContent = testText;
+        tempElement.style.position = 'absolute';
+        tempElement.style.left = '-9999px';
+        document.body.appendChild(tempElement);
+        
+        // Create a selection range
+        const range = document.createRange();
+        range.selectNodeContents(tempElement);
+        
+        // Apply the selection
+        const selection = window.getSelection();
+        selection.removeAllRanges();
+        selection.addRange(range);
+        
+        console.log('RemoveQuotesExtension: Selected text for test:', selection.toString());
+        
+        // Manually process the selection without using clipboard API
+        try {
+          chrome.storage.local.get(['isEnabled', 'removeQuotesEnabled', 'copyAndOpenUrlEnabled'], (result) => {
+            const isEnabled = result.isEnabled !== undefined ? result.isEnabled : true;
+            const removeQuotesEnabled = result.removeQuotesEnabled !== undefined ? result.removeQuotesEnabled : true;
+            const copyAndOpenUrlEnabled = result.copyAndOpenUrlEnabled !== undefined ? result.copyAndOpenUrlEnabled : true;
+            
+            console.log('RemoveQuotesExtension: Test with settings -', 
+                      'Enabled:', isEnabled, 
+                      'Remove Quotes:', removeQuotesEnabled, 
+                      'Copy & Open URL:', copyAndOpenUrlEnabled);
+            
+            if (!isEnabled) {
+              console.log('RemoveQuotesExtension: Extension is disabled for test');
+              return;
+            }
+            
+            let cleanedText = testText;
+            
+            if (removeQuotesEnabled) {
+              if (cleanedText.startsWith('"') && cleanedText.endsWith('"')) {
+                cleanedText = cleanedText.slice(1, -1);
+                console.log('RemoveQuotesExtension: Test - Removed outer quotes');
+              }
+              cleanedText = cleanedText.replace(/""/g, '"');
+            }
+            
+            console.log('RemoveQuotesExtension: Test - Cleaned text:', cleanedText);
+            
+            if (copyAndOpenUrlEnabled) {
+              const urlRegex = /(https?:\/\/[^\s]+)/g;
+              const match = cleanedText.match(urlRegex);
+              if (match) {
+                console.log('RemoveQuotesExtension: Test - Would open URL:', match[0]);
+                // Don't actually open the URL in test mode
+                // window.open(match[0], '_blank');
+              }
+            }
+            
+            // Show the result in an alert
+            alert('Test Result: ' + cleanedText);
+          });
+        } catch (error) {
+          console.error('RemoveQuotesExtension: Test error:', error);
+        }
+        
+        // Clean up
+        selection.removeAllRanges();
+        document.body.removeChild(tempElement);
+        console.log('RemoveQuotesExtension: Test completed');
+      });
+      
+      debugContainer.appendChild(debugButton);
+      document.body.appendChild(debugContainer);
+      
+      // Add custom right-click menu for cells
+      addCustomContextMenu();
+      
+      // Add direct copy buttons to cells
+      addCopyButtonsToCells();
+      
+      // Add click handlers to cells
+      addClickHandlersToCells();
+    }
+
+    const copyHandler = (event) => {
+      console.log('RemoveQuotesExtension: Copy event detected');
+      
+      try {
+        chrome.storage.local.get(['isEnabled', 'removeQuotesEnabled', 'copyAndOpenUrlEnabled'], (result) => {
+          try {
+            const isEnabled = result.isEnabled !== undefined ? result.isEnabled : true;
+            const removeQuotesEnabled = result.removeQuotesEnabled !== undefined ? result.removeQuotesEnabled : true;
+            const copyAndOpenUrlEnabled = result.copyAndOpenUrlEnabled !== undefined ? result.copyAndOpenUrlEnabled : true;
+            console.log('RemoveQuotesExtension: Settings -', 
+                        'Enabled:', isEnabled, 
+                        'Remove Quotes:', removeQuotesEnabled, 
+                        'Copy & Open URL:', copyAndOpenUrlEnabled);
+
+            // Only proceed if the extension is enabled
+            if (!isEnabled) {
+              console.log('RemoveQuotesExtension: Extension is disabled, not processing copy event');
+              return;
+            }
+
+            if (window.location.href.includes('noco.bvmodel.cloud')) {
+              // Try to get the selected text
+              let selection = window.getSelection().toString();
+              console.log('RemoveQuotesExtension: Selected text:', selection);
+              
+              // If selection is empty, try to get text from the currently focused element
+              if (!selection) {
+                const activeElement = document.activeElement;
+                
+                // Check if we're in a table cell
+                let cellText = '';
+                if (activeElement) {
+                  // Try to find the cell content
+                  if (activeElement.tagName === 'TD' || activeElement.closest('td')) {
+                    const cell = activeElement.tagName === 'TD' ? activeElement : activeElement.closest('td');
+                    cellText = cell.textContent.trim();
+                  } else if (activeElement.classList && (activeElement.classList.contains('cell') || activeElement.closest('.cell'))) {
+                    const cell = activeElement.classList.contains('cell') ? activeElement : activeElement.closest('.cell');
+                    cellText = cell.textContent.trim();
+                  } else if (activeElement.getAttribute && activeElement.getAttribute('role') === 'gridcell' || activeElement.closest('[role="gridcell"]')) {
+                    const cell = activeElement.getAttribute('role') === 'gridcell' ? activeElement : activeElement.closest('[role="gridcell"]');
+                    cellText = cell.textContent.trim();
+                  }
+                  
+                  if (cellText) {
+                    selection = cellText;
+                    console.log('RemoveQuotesExtension: Got text from cell:', selection);
+                  } else if (activeElement.tagName === 'INPUT' || activeElement.tagName === 'TEXTAREA') {
+                    selection = activeElement.value.substring(
+                      activeElement.selectionStart,
+                      activeElement.selectionEnd
+                    );
+                    console.log('RemoveQuotesExtension: Got text from input/textarea:', selection);
+                  }
+                }
+                
+                // Don't use the entire page content if we couldn't find a specific cell
+                if (!selection) {
+                  console.log('RemoveQuotesExtension: No specific text found to copy');
+                  return;
+                }
+              }
+              
+              // If we have text to process
+              if (selection) {
+                // Remove quotes if the option is enabled
+                let cleanedText = selection;
+                if (removeQuotesEnabled) {
+                  if (cleanedText.startsWith('"') && cleanedText.endsWith('"')) {
+                    cleanedText = cleanedText.slice(1, -1);
+                    console.log('RemoveQuotesExtension: Removed outer quotes');
+                  }
+                  cleanedText = cleanedText.replace(/""/g, '"');
+                  console.log('RemoveQuotesExtension: Cleaned text:', cleanedText);
+                }
+        
+                // Copy and open URL if the option is enabled
+                if (copyAndOpenUrlEnabled) {
+                  const urlRegex = /(https?:\/\/[^\s]+)/g;
+                  const match = cleanedText.match(urlRegex);
+                  if (match) {
+                    console.log('RemoveQuotesExtension: Opening URL:', match[0]);
+                    window.open(match[0], '_blank');
+                  }
+                }
+        
+                // Set the cleaned text in the clipboard
+                event.clipboardData.setData('text/plain', cleanedText);
+                event.preventDefault();
+                console.log('RemoveQuotesExtension: Text copied to clipboard:', cleanedText);
+              }
+            }
+          } catch (innerError) {
+            console.error('RemoveQuotesExtension: Error processing copy event:', innerError);
+          }
+        });
+      } catch (storageError) {
+        console.error('RemoveQuotesExtension: Error accessing storage:', storageError);
+        // If we get a context invalidated error, remove the listener to prevent further errors
+        if (storageError.message && storageError.message.includes('Extension context invalidated')) {
+          document.removeEventListener('copy', copyHandler);
+          // Try to reinitialize after a delay
+          setTimeout(initializeExtension, 1000);
+        }
+      }
+    };
+
+    // Add the copy event listener
+    document.addEventListener('copy', copyHandler);
+    console.log('RemoveQuotesExtension: Copy event listener added');
+    
+    // Set up message listener
+    try {
+      chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+        console.log('RemoveQuotesExtension: Message received:', message);
+        if (message.action === "copy") {
+          console.log('RemoveQuotesExtension: Processing copy action from context menu');
+          
+          // Get the selected text or cell text
+          let textToCopy = '';
+          const selection = window.getSelection();
+          
+          if (selection.toString()) {
+            textToCopy = selection.toString();
+          } else if (message.cellText) {
+            textToCopy = message.cellText;
+          }
+          
+          console.log('RemoveQuotesExtension: Text to copy from message:', textToCopy);
+          
+          if (textToCopy) {
+            chrome.storage.local.get(['isEnabled', 'removeQuotesEnabled', 'copyAndOpenUrlEnabled'], (result) => {
+              const isEnabled = result.isEnabled !== undefined ? result.isEnabled : true;
+              const removeQuotesEnabled = result.removeQuotesEnabled !== undefined ? result.removeQuotesEnabled : true;
+              const copyAndOpenUrlEnabled = result.copyAndOpenUrlEnabled !== undefined ? result.copyAndOpenUrlEnabled : true;
+              
+              if (!isEnabled) {
+                // Just copy the original text
+                copyTextToClipboard(textToCopy);
+                return;
+              }
+              
+              // Process the text
+              let cleanedText = textToCopy;
+              
+              if (removeQuotesEnabled) {
+                if (cleanedText.startsWith('"') && cleanedText.endsWith('"')) {
+                  cleanedText = cleanedText.slice(1, -1);
+                }
+                cleanedText = cleanedText.replace(/""/g, '"');
+              }
+              
+              // Copy the processed text
+              copyTextToClipboard(cleanedText);
+              console.log('RemoveQuotesExtension: Copied processed text:', cleanedText);
+              
+              // Open URL if present and enabled
+              if (copyAndOpenUrlEnabled) {
+                const urlRegex = /(https?:\/\/[^\s]+)/g;
+                const match = cleanedText.match(urlRegex);
+                if (match) {
+                  console.log('RemoveQuotesExtension: Opening URL:', match[0]);
+                  window.open(match[0], '_blank');
+                }
+              }
+            });
+          }
+        }
+      });
+      console.log('RemoveQuotesExtension: Message listener added');
+    } catch (messageError) {
+      console.error('RemoveQuotesExtension: Error setting up message listener:', messageError);
+    }
+    
+  } catch (error) {
+    console.error('RemoveQuotesExtension: Initialization error:', error);
+    // Reinitialize the extension after a short delay
+    setTimeout(initializeExtension, 2000);
+  }
+}
+
+// Helper function to copy text to clipboard
+function copyTextToClipboard(text) {
+  const textarea = document.createElement('textarea');
+  textarea.value = text;
+  textarea.style.position = 'fixed';
+  textarea.style.opacity = '0';
+  document.body.appendChild(textarea);
+  textarea.select();
+  document.execCommand('copy');
+  document.body.removeChild(textarea);
+}
+
+// Function to process text according to extension settings
+function processTextWithSettings(text, callback) {
+  chrome.storage.local.get(['isEnabled', 'removeQuotesEnabled', 'copyAndOpenUrlEnabled'], (result) => {
+    const isEnabled = result.isEnabled !== undefined ? result.isEnabled : true;
+    const removeQuotesEnabled = result.removeQuotesEnabled !== undefined ? result.removeQuotesEnabled : true;
+    const copyAndOpenUrlEnabled = result.copyAndOpenUrlEnabled !== undefined ? result.copyAndOpenUrlEnabled : true;
+    
+    if (!isEnabled) {
+      callback(text, false);
+      return;
+    }
+    
+    let cleanedText = text;
+    
+    if (removeQuotesEnabled) {
+      if (cleanedText.startsWith('"') && cleanedText.endsWith('"')) {
+        cleanedText = cleanedText.slice(1, -1);
+      }
+      cleanedText = cleanedText.replace(/""/g, '"');
+    }
+    
+    let urlToOpen = null;
+    if (copyAndOpenUrlEnabled) {
+      const urlRegex = /(https?:\/\/[^\s]+)/g;
+      const match = cleanedText.match(urlRegex);
+      if (match) {
+        urlToOpen = match[0];
+      }
+    }
+    
+    callback(cleanedText, urlToOpen);
+  });
+}
+
+// Function to add custom context menu for cells
+function addCustomContextMenu() {
+  // Add event listener for right-click on table cells
+  document.addEventListener('contextmenu', function(event) {
+    // Check if we're in a table cell or something that might contain data
+    let target = event.target;
+    let cellText = '';
+    
+    // Try to find the cell content
+    if (target.tagName === 'TD' || target.closest('td')) {
+      const cell = target.tagName === 'TD' ? target : target.closest('td');
+      cellText = cell.textContent.trim();
+    } else if (target.classList && (target.classList.contains('cell') || target.closest('.cell'))) {
+      const cell = target.classList.contains('cell') ? target : target.closest('.cell');
+      cellText = cell.textContent.trim();
+    } else if (target.getAttribute && target.getAttribute('role') === 'gridcell' || target.closest('[role="gridcell"]')) {
+      const cell = target.getAttribute('role') === 'gridcell' ? target : target.closest('[role="gridcell"]');
+      cellText = cell.textContent.trim();
+    }
+    
+    // If we found text, add our custom option to the context menu
+    if (cellText) {
+      console.log('RemoveQuotesExtension: Found cell text:', cellText);
+      
+      // We'll use a timeout to let the browser's context menu appear first
+      setTimeout(() => {
+        // Create our custom context menu
+        const customMenu = document.createElement('div');
+        customMenu.className = 'rq-custom-menu';
+        customMenu.style.position = 'absolute';
+        customMenu.style.left = event.pageX + 'px';
+        customMenu.style.top = event.pageY + 'px';
+        customMenu.style.backgroundColor = 'white';
+        customMenu.style.border = '1px solid #ccc';
+        customMenu.style.borderRadius = '4px';
+        customMenu.style.boxShadow = '0 2px 5px rgba(0,0,0,0.2)';
+        customMenu.style.zIndex = '10000';
+        customMenu.style.padding = '5px 0';
+        
+        // Create the menu item
+        const menuItem = document.createElement('div');
+        menuItem.textContent = 'Copy with RemoveQuotes';
+        menuItem.style.padding = '5px 10px';
+        menuItem.style.cursor = 'pointer';
+        menuItem.style.hover = 'background-color: #f0f0f0';
+        
+        menuItem.addEventListener('click', () => {
+          // Process and copy this text
+          processTextWithSettings(cellText, (cleanedText, urlToOpen) => {
+            copyTextToClipboard(cleanedText);
+            console.log('RemoveQuotesExtension: Copied cell text:', cleanedText);
+            
+            if (urlToOpen) {
+              console.log('RemoveQuotesExtension: Opening URL:', urlToOpen);
+              window.open(urlToOpen, '_blank');
+            }
+          });
+          
+          // Remove the menu
+          document.body.removeChild(customMenu);
+        });
+        
+        customMenu.appendChild(menuItem);
+        document.body.appendChild(customMenu);
+        
+        // Close the menu when clicking elsewhere
+        const closeMenu = (e) => {
+          if (!customMenu.contains(e.target)) {
+            if (document.body.contains(customMenu)) {
+              document.body.removeChild(customMenu);
+            }
+            document.removeEventListener('click', closeMenu);
+          }
+        };
+        
+        // Add a slight delay before adding the click listener
+        setTimeout(() => {
+          document.addEventListener('click', closeMenu);
+        }, 100);
+      }, 50);
+    }
+  });
+}
+
+// Function to add copy buttons to cells
+function addCopyButtonsToCells() {
+  // We'll use a MutationObserver to detect when new cells are added to the DOM
+  const observer = new MutationObserver((mutations) => {
+    // Look for table cells in the mutations
+    mutations.forEach(mutation => {
+      // Check if we have new nodes
+      if (mutation.addedNodes && mutation.addedNodes.length > 0) {
+        mutation.addedNodes.forEach(node => {
+          // Only process element nodes
+          if (node.nodeType === Node.ELEMENT_NODE) {
+            // Find all cells in this node
+            const cells = [];
+            
+            // Check if the node itself is a cell
+            if (node.tagName === 'TD' || 
+                (node.classList && node.classList.contains('cell')) || 
+                (node.getAttribute && node.getAttribute('role') === 'gridcell')) {
+              cells.push(node);
+            }
+            
+            // Check for cells within this node
+            const cellElements = node.querySelectorAll('td, .cell, [role="gridcell"]');
+            cellElements.forEach(cell => cells.push(cell));
+            
+            // Add copy buttons to these cells
+            cells.forEach(cell => {
+              // Only add a button if the cell doesn't already have one
+              if (!cell.querySelector('.rq-copy-button')) {
+                addCopyButtonToCell(cell);
+              }
+            });
+          }
+        });
+      }
+    });
+  });
+  
+  // Start observing the document
+  observer.observe(document.body, { childList: true, subtree: true });
+  
+  // Also add buttons to existing cells
+  const existingCells = document.querySelectorAll('td, .cell, [role="gridcell"]');
+  existingCells.forEach(cell => addCopyButtonToCell(cell));
+}
+
+// Function to add a copy button to a single cell
+function addCopyButtonToCell(cell) {
+  // Only add to cells with content
+  const cellText = cell.textContent.trim();
+  if (!cellText) return;
+  
+  // Create a copy button
+  const copyButton = document.createElement('button');
+  copyButton.className = 'rq-copy-button';
+  copyButton.textContent = '📋';
+  copyButton.title = 'Copy with RemoveQuotes';
+  copyButton.style.position = 'absolute';
+  copyButton.style.right = '2px';
+  copyButton.style.top = '2px';
+  copyButton.style.background = 'rgba(255,255,255,0.8)';
+  copyButton.style.border = '1px solid #ccc';
+  copyButton.style.borderRadius = '3px';
+  copyButton.style.padding = '2px 5px';
+  copyButton.style.fontSize = '10px';
+  copyButton.style.cursor = 'pointer';
+  copyButton.style.display = 'none'; // Hide by default, show on hover
+  
+  // Make the cell position relative if it's not already
+  const currentPosition = window.getComputedStyle(cell).position;
+  if (currentPosition === 'static') {
+    cell.style.position = 'relative';
+  }
+  
+  // Add hover effect to show the button
+  cell.addEventListener('mouseenter', () => {
+    copyButton.style.display = 'block';
+  });
+  
+  cell.addEventListener('mouseleave', () => {
+    copyButton.style.display = 'none';
+  });
+  
+  // Add click handler to the button
+  copyButton.addEventListener('click', (event) => {
+    event.stopPropagation(); // Prevent triggering cell click
+    
+    // Process and copy the cell text
+    processTextWithSettings(cellText, (cleanedText, urlToOpen) => {
+      copyTextToClipboard(cleanedText);
+      console.log('RemoveQuotesExtension: Copied cell text via button:', cleanedText);
+      
+      // Show a brief confirmation
+      const confirmation = document.createElement('div');
+      confirmation.textContent = 'Copied!';
+      confirmation.style.position = 'absolute';
+      confirmation.style.right = '25px';
+      confirmation.style.top = '2px';
+      confirmation.style.background = 'rgba(0,0,0,0.7)';
+      confirmation.style.color = 'white';
+      confirmation.style.padding = '2px 5px';
+      confirmation.style.borderRadius = '3px';
+      confirmation.style.fontSize = '10px';
+      cell.appendChild(confirmation);
+      
+      // Remove the confirmation after a short delay
+      setTimeout(() => {
+        if (cell.contains(confirmation)) {
+          cell.removeChild(confirmation);
+        }
+      }, 1000);
+      
+      if (urlToOpen) {
+        console.log('RemoveQuotesExtension: Opening URL:', urlToOpen);
+        window.open(urlToOpen, '_blank');
+      }
+    });
+  });
+  
+  // Add the button to the cell
+  cell.appendChild(copyButton);
+}
+
+// Function to add click handlers to cells for double-click copy
+function addClickHandlersToCells() {
+  // Add a global double-click handler
+  document.addEventListener('dblclick', (event) => {
+    // Check if we clicked on a cell
+    let target = event.target;
+    let cell = null;
+    
+    if (target.tagName === 'TD' || target.closest('td')) {
+      cell = target.tagName === 'TD' ? target : target.closest('td');
+    } else if (target.classList && (target.classList.contains('cell') || target.closest('.cell'))) {
+      cell = target.classList.contains('cell') ? target : target.closest('.cell');
+    } else if (target.getAttribute && target.getAttribute('role') === 'gridcell' || target.closest('[role="gridcell"]')) {
+      cell = target.getAttribute('role') === 'gridcell' ? target : target.closest('[role="gridcell"]');
+    }
+    
+    if (cell) {
+      const cellText = cell.textContent.trim();
+      if (cellText) {
+        // Process and copy the cell text
+        processTextWithSettings(cellText, (cleanedText, urlToOpen) => {
+          copyTextToClipboard(cleanedText);
+          console.log('RemoveQuotesExtension: Copied cell text via double-click:', cleanedText);
+          
+          // Show a brief confirmation
+          const confirmation = document.createElement('div');
+          confirmation.textContent = 'Copied!';
+          confirmation.style.position = 'absolute';
+          confirmation.style.left = '50%';
+          confirmation.style.top = '50%';
+          confirmation.style.transform = 'translate(-50%, -50%)';
+          confirmation.style.background = 'rgba(0,0,0,0.7)';
+          confirmation.style.color = 'white';
+          confirmation.style.padding = '5px 10px';
+          confirmation.style.borderRadius = '3px';
+          confirmation.style.zIndex = '10000';
+          
+          // Make the cell position relative if it's not already
+          const currentPosition = window.getComputedStyle(cell).position;
+          if (currentPosition === 'static') {
+            cell.style.position = 'relative';
+          }
+          
+          cell.appendChild(confirmation);
+          
+          // Remove the confirmation after a short delay
+          setTimeout(() => {
+            if (cell.contains(confirmation)) {
+              cell.removeChild(confirmation);
+            }
+          }, 1000);
+          
+          if (urlToOpen) {
+            console.log('RemoveQuotesExtension: Opening URL:', urlToOpen);
+            window.open(urlToOpen, '_blank');
+          }
+        });
+      }
+    }
+  });
+}
+
+// Initialize the extension
+initializeExtension();
+
+// Set up a simple error recovery mechanism
+let reconnectAttempts = 0;
+const maxReconnectAttempts = 5;
+
+function attemptReconnect() {
+  if (reconnectAttempts < maxReconnectAttempts) {
+    reconnectAttempts++;
+    console.log(`RemoveQuotesExtension: Attempting to reconnect (${reconnectAttempts}/${maxReconnectAttempts})...`);
+    try {
+      initializeExtension();
+    } catch (error) {
+      console.error('RemoveQuotesExtension: Reconnection attempt failed:', error);
+      setTimeout(attemptReconnect, 2000);
+    }
+  } else {
+    console.log('RemoveQuotesExtension: Max reconnection attempts reached. Please reload the page.');
+  }
+}
+
+// Handle errors globally
+window.addEventListener('error', (event) => {
+  if (event.error && event.error.message && 
+      event.error.message.includes('Extension context invalidated')) {
+    console.log('RemoveQuotesExtension: Detected extension context invalidation, attempting recovery...');
+    attemptReconnect();
+  }
+});

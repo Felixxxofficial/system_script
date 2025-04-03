@@ -1,0 +1,45 @@
+chrome.runtime.onInstalled.addListener(() => {
+  // Initialize extension settings if they don't exist
+  chrome.storage.local.get(['isEnabled', 'removeQuotesEnabled', 'copyAndOpenUrlEnabled'], (result) => {
+    if (result.isEnabled === undefined) {
+      chrome.storage.local.set({ isEnabled: true });
+    }
+    if (result.removeQuotesEnabled === undefined) {
+      chrome.storage.local.set({ removeQuotesEnabled: true });
+    }
+    if (result.copyAndOpenUrlEnabled === undefined) {
+      chrome.storage.local.set({ copyAndOpenUrlEnabled: true });
+    }
+    console.log('Extension initialized with settings:', result);
+  });
+
+  chrome.contextMenus.create({
+    id: "copy",
+    title: "Copy",
+    contexts: ["all"],
+    documentUrlPatterns: ["http://noco.bvmodel.cloud/*", "https://noco.bvmodel.cloud/*"]
+  });
+
+  chrome.contextMenus.create({
+    id: "toggleExtension",
+    title: "Disable Extension",
+    contexts: ["all"],
+    documentUrlPatterns: ["http://noco.bvmodel.cloud/*", "https://noco.bvmodel.cloud/*"]
+  });
+});
+
+chrome.contextMenus.onClicked.addListener((info, tab) => {
+  if (info.menuItemId === "copy") {
+    chrome.tabs.sendMessage(tab.id, { action: "copy" });
+  } else if (info.menuItemId === "toggleExtension") {
+    chrome.storage.local.get(['isEnabled'], (result) => {
+      const isEnabled = result.isEnabled !== undefined ? result.isEnabled : true;
+      const newState = !isEnabled;
+      chrome.storage.local.set({ isEnabled: newState }, () => {
+        chrome.contextMenus.update("toggleExtension", {
+          title: newState ? "Disable Extension" : "Enable Extension"
+        });
+      });
+    });
+  }
+});

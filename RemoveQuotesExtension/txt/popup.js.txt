@@ -1,0 +1,39 @@
+document.addEventListener('DOMContentLoaded', () => {
+  const toggleButton = document.getElementById('toggleButton');
+  const removeQuotesCheckbox = document.getElementById('removeQuotes');
+  const copyAndOpenUrlCheckbox = document.getElementById('copyAndOpenUrl');
+
+  chrome.storage.local.get(['isEnabled'], (result) => {
+    const isEnabled = result.isEnabled !== undefined ? result.isEnabled : true;
+    toggleButton.textContent = isEnabled ? 'Disable Extension' : 'Enable Extension';
+  });
+
+  chrome.storage.local.get(['removeQuotesEnabled', 'copyAndOpenUrlEnabled'], (result) => {
+    removeQuotesCheckbox.checked = result.removeQuotesEnabled !== undefined ? result.removeQuotesEnabled : true;
+    copyAndOpenUrlCheckbox.checked = result.copyAndOpenUrlEnabled !== undefined ? result.copyAndOpenUrlEnabled : true;
+    console.log('Initial state:', result);
+  });
+
+  toggleButton.addEventListener('click', () => {
+    chrome.storage.local.get(['isEnabled'], (result) => {
+      const isEnabled = result.isEnabled !== undefined ? result.isEnabled : true;
+      const newState = !isEnabled;
+      console.log('Toggling extension state to:', newState);
+      chrome.storage.local.set({ isEnabled: newState }, () => {
+        toggleButton.textContent = newState ? 'Disable Extension' : 'Enable Extension';
+      });
+    });
+  });
+
+  removeQuotesCheckbox.addEventListener('change', () => {
+    chrome.storage.local.set({ removeQuotesEnabled: removeQuotesCheckbox.checked }, () => {
+      console.log('removeQuotesEnabled set to:', removeQuotesCheckbox.checked);
+    });
+  });
+
+  copyAndOpenUrlCheckbox.addEventListener('change', () => {
+    chrome.storage.local.set({ copyAndOpenUrlEnabled: copyAndOpenUrlCheckbox.checked }, () => {
+      console.log('copyAndOpenUrlEnabled set to:', copyAndOpenUrlCheckbox.checked);
+    });
+  });
+}); 

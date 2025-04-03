@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Remove Quotes Extension</title>
+  <style>
+    body {
+      width: 200px;
+      padding: 10px;
+      font-family: Arial, sans-serif;
+    }
+    button {
+      width: 100%;
+      padding: 10px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    label {
+      display: block;
+      margin: 10px 0;
+    }
+  </style>
+</head>
+<body>
+  <label>
+    <input type="checkbox" id="removeQuotes"> Remove Quotes
+  </label>
+  <label>
+    <input type="checkbox" id="copyAndOpenUrl"> Copy and Open URL
+  </label>
+  <button id="toggleButton">Disable Extension</button>
+  <script src="popup.js"></script>
+</body>
+</html> 
