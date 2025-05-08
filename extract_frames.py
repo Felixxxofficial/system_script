@@ -3,7 +3,7 @@ import os
 import shutil
 import sys
 
-def extract_frames(video_path, output_folder="frames", frame_rate=10):  # Changed default to 10 fps
+def extract_frames(video_path, output_folder, frame_rate=10):
     """Extract frames from an MP4 video using FFmpeg."""
     print(f"Processing video: {video_path}")
     
@@ -12,9 +12,7 @@ def extract_frames(video_path, output_folder="frames", frame_rate=10):  # Change
         print(f"Error: Video file '{video_path}' does not exist.")
         return False
 
-    # Create output folder with video name
-    video_name = os.path.splitext(os.path.basename(video_path))[0]
-    output_folder = f"frames-{video_name}"
+    # Create output folder
     output_dir = os.path.join(os.path.dirname(video_path), output_folder)
     print(f"Output directory: {output_dir}")
     if os.path.exists(output_dir):
@@ -50,37 +48,50 @@ def extract_frames(video_path, output_folder="frames", frame_rate=10):  # Change
 def main():
     print("Script started.")
     
-    # Define the directory containing videos
-    video_dir = r"C:\Users\felix\OFM\Reels\Frame"
+    # Define the directories containing videos
+    video_folders = [
+        r"C:\Users\felix\OFM\Reels\Images\Student\Video",
+        r"C:\Users\felix\OFM\Reels\Images\Goth\Video",
+        r"C:\Users\felix\OFM\Reels\Images\Nature\Video",
+        r"C:\Users\felix\OFM\Reels\Images\Normal\Video",
+        r"C:\Users\felix\OFM\Reels\Images\Construction\Video"
+    ]
     
-    # Get all MP4 files in the directory
-    try:
-        video_files = [f for f in os.listdir(video_dir) if f.lower().endswith('.mp4')]
-    except FileNotFoundError:
-        print(f"Error: Directory '{video_dir}' not found.")
-        input("Press Enter to exit...")
-        return
-    
-    if not video_files:
-        print(f"No MP4 files found in '{video_dir}'.")
-        input("Press Enter to exit...")
-        return
-    
-    print(f"Found {len(video_files)} MP4 files to process:")
-    for video_file in video_files:
-        print(f"- {video_file}")
-    
-    # Process each video
-    for video_file in video_files:
-        video_path = os.path.join(video_dir, video_file)
-        print(f"\nProcessing: {video_file}")
+    # Process each directory
+    for video_dir in video_folders:
+        print(f"\nProcessing directory: {video_dir}")
         
-        # Extract frames with adjustable frame rate
-        success = extract_frames(video_path, frame_rate=3)  # Adjust frame_rate here
-        if success:
-            print(f"Extraction completed successfully for {video_file}!")
-        else:
-            print(f"Extraction failed for {video_file}. See errors above for details.")
+        # Check if directory exists
+        if not os.path.exists(video_dir):
+            print(f"Error: Directory '{video_dir}' not found.")
+            continue
+        
+        # Get all MP4 files in the directory
+        try:
+            video_files = [f for f in os.listdir(video_dir) if f.lower().endswith('.mp4')]
+        except FileNotFoundError:
+            print(f"Error: Could not access directory '{video_dir}'.")
+            continue
+        
+        if not video_files:
+            print(f"No MP4 files found in '{video_dir}'.")
+            continue
+        
+        print(f"Found {len(video_files)} MP4 files to process:")
+        for video_file in video_files:
+            print(f"- {video_file}")
+        
+        # Process each video
+        for video_file in video_files:
+            video_path = os.path.join(video_dir, video_file)
+            print(f"\nProcessing: {video_file}")
+            
+            # Extract frames with adjustable frame rate
+            success = extract_frames(video_path, "Frames", frame_rate=3)  # Adjust frame_rate here
+            if success:
+                print(f"Extraction completed successfully for {video_file}!")
+            else:
+                print(f"Extraction failed for {video_file}. See errors above for details.")
     
     print("\nAll files processed.")
     input("Press Enter to exit...")
