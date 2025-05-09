@@ -56,9 +56,19 @@ def start_adspower_browser():
         data = response.json()
         if data.get("code") != 0:
             raise Exception(f"AdsPower error: {data.get('msg')}")
+        
+        # Make sure we have all the required data
+        if not data.get("data") or not data["data"].get("ws"):
+            raise Exception("Missing WebSocket data in AdsPower response")
             
-        ws_endpoint = data["data"]["ws"]["puppeteer"]
+        # Get the CDP endpoint instead of puppeteer for better compatibility
+        ws_endpoint = data["data"]["ws"].get("cdp") or data["data"]["ws"].get("puppeteer")
+        if not ws_endpoint:
+            raise Exception("No valid WebSocket endpoint found in AdsPower response")
+            
         print(f"[INFO] Working browser WebSocket: {ws_endpoint}")
+        # Wait a moment for the browser to fully initialize
+        time.sleep(3)
         return ws_endpoint
     except Exception as e:
         print(f"[ERROR] Browser startup failed: {e}")
@@ -115,7 +125,7 @@ def generate_video(page, prompt, max_retries=3):
             
             # Click "Nature" category
             print("[INFO] Looking for Nature category...")
-            nature_selector = 'text="Nature"'
+            nature_selector = 'button.title-YfEi4M:has-text("Nature")'
             page.wait_for_selector(nature_selector, timeout=10000)
             page.click(nature_selector)
             print("[INFO] Clicked Nature category")
@@ -137,48 +147,292 @@ def generate_video(page, prompt, max_retries=3):
             print("[INFO] Clicked Assets tab")
             time.sleep(2)  # Wait for assets to load
 
-            # Select asset "7.5."
-            print("[INFO] Looking for asset 7.5...")
-            asset_selector = 'p.name-kS9Ae2:has-text("7.5.")'
-            page.wait_for_selector(asset_selector, timeout=10000)
-            page.click(asset_selector)
-            print("[INFO] Selected asset 7.5.")
-            time.sleep(2)  # Wait for asset selection
-
-            # Click first image
-            print("[INFO] Looking for first image...")
-            image_selector = 'img'  # First image
-            page.wait_for_selector(image_selector, timeout=10000)
-            images = page.query_selector_all(image_selector)
-            if len(images) > 0:
-                images[0].click()
-                print("[INFO] Clicked first image")
+            # Add enhanced debugging to find and interact with the 7.5 folder
+            print("[INFO] Debugging available elements before looking for 7.5 folder...")
+            # List all elements that might be related to folders
+            debug_elements = page.query_selector_all('div.inner-s5b9zr, p.name-kS9Ae2, div.imageGrid-FH3gvW')
+            print(f"[DEBUG] Found {len(debug_elements)} potential folder elements")
+            
+            for i, element in enumerate(debug_elements):
+                if element.is_visible():
+                    tag = element.evaluate('el => el.tagName.toLowerCase()')
+                    class_name = element.evaluate('el => el.className')
+                    text = element.inner_text().strip()[:50] if tag != 'input' else '[input field]'
+                    print(f"[DEBUG] Element {i}: {tag}.{class_name}, Text: {text}")
+                    
+                    # Check if this element contains "7.5"
+                    if "7.5" in text:
+                        print(f"[DEBUG] Found element with 7.5 text: {tag}.{class_name}")
+            
+            # First, check if we're already inside the 7.5 folder
+            print("[INFO] Checking if we're already inside the 7.5 folder...")
+            nav_selector = 'div.container-JD1VJ8:has(button:has-text("7.5."))'
+            
+            try:
+                # Check if the navigation breadcrumb with 7.5 is present
+                if page.is_visible(nav_selector):
+                    print("[INFO] Already inside the 7.5 folder!")
+                    inside_folder = True
+                else:
+                    inside_folder = False
+                    print("[INFO] Not inside the 7.5 folder yet, need to navigate to it")
+                    
+                    # Try to find and click the 7.5 folder
+                    print("[INFO] Looking for div.inner-s5b9zr containing 7.5...")
+                    inner_selector = 'div.inner-s5b9zr'
+                    inner_elements = page.query_selector_all(inner_selector)
+                    
+                    target_element = None
+                    for i, element in enumerate(inner_elements):
+                        if element.is_visible():
+                            text = element.inner_text().strip()
+                            print(f"[DEBUG] inner-s5b9zr {i} text: {text[:50]}")
+                            if "7.5" in text:
+                                target_element = element
+                                print(f"[DEBUG] Found target element {i} with 7.5 text")
+                                break
+                    
+                    if target_element:
+                        # Use JavaScript to force open the folder - this worked before
+                        print("[INFO] Using JavaScript to force open the 7.5 folder")
+                        
+                        # Get the element's DOM path for JavaScript
+                        element_js_handle = target_element.evaluate('''(element) => {
+                            // Force a click event on the element
+                            const clickEvent = new MouseEvent('dblclick', {
+                                bubbles: true,
+                                cancelable: true,
+                                view: window
+                            });
+                            element.dispatchEvent(clickEvent);
+                            
+                            // Try to find and click any clickable children
+                            const clickables = element.querySelectorAll('p, div, img');
+                            for (let i = 0; i < clickables.length; i++) {
+                                clickables[i].click();
+                            }
+                            
+                            // Also try to click the name element specifically
+                            const nameElement = element.querySelector('p.name-kS9Ae2');
+                            if (nameElement) {
+                                nameElement.click();
+                                // Try a double click too
+                                const dblClickEvent = new MouseEvent('dblclick', {
+                                    bubbles: true,
+                                    cancelable: true,
+                                    view: window
+                                });
+                                nameElement.dispatchEvent(dblClickEvent);
+                            }
+                            
+                            return "Attempted to force open folder via JavaScript";
+                        }''')
+                        
+                        print(f"[DEBUG] JavaScript result: {element_js_handle}")
+                        time.sleep(5)  # Longer wait for JavaScript actions to take effect
+                        
+                        # Try to verify we're inside the folder by checking for the navigation breadcrumb
+                        print("[INFO] Checking for navigation breadcrumb with 7.5...")
+                        try:
+                            # Check for the navigation breadcrumb that indicates we're inside the folder
+                            breadcrumb_selector = 'div.container-JD1VJ8 button:has-text("7.5.")'
+                            page.wait_for_selector(breadcrumb_selector, timeout=5000)
+                            print("[INFO] Successfully navigated to the 7.5 folder!")
+                            inside_folder = True
+                        except Exception as e:
+                            print(f"[WARNING] Could not find navigation breadcrumb: {e}")
+                            # Even if we can't confirm, assume we're in and continue
+                            print("[INFO] Continuing anyway, assuming we're in the folder")
+                            inside_folder = True
+            except Exception as e:
+                print(f"[WARNING] Error checking folder navigation: {e}")
+                inside_folder = False
+            
+            # Now that we're inside the folder (or should be), find and click on an image
+            if inside_folder:
+                # Wait a moment to ensure folder contents are loaded
+                time.sleep(3)
+                
+                # Try multiple approaches to find and click on images
+                print("[INFO] Looking for images in the 7.5 folder...")
+                
+                # Approach 1: Look for image titles
+                print("[INFO] Approach 1: Looking for image titles...")
+                image_title_selector = 'p.title-Epqee6'
+                try:
+                    page.wait_for_selector(image_title_selector, timeout=5000, state='visible')
+                    image_titles = page.query_selector_all(image_title_selector)
+                    print(f"[DEBUG] Found {len(image_titles)} image titles in the folder")
+                    
+                    if len(image_titles) > 0:
+                        for i, title in enumerate(image_titles[:5]):
+                            if title.is_visible():
+                                text = title.inner_text().strip()
+                                print(f"[DEBUG] Image {i}: {text}")
+                        
+                        # Click on the first visible title
+                        for title in image_titles:
+                            if title.is_visible():
+                                print("[INFO] Clicking on first visible image title")
+                                title.click()
+                                time.sleep(3)
+                                break
+                except Exception as e:
+                    print(f"[WARNING] Approach 1 failed: {e}")
+                
+                # Approach 2: Look for image containers
+                print("[INFO] Approach 2: Looking for image info containers...")
+                try:
+                    image_info_selector = 'div.info-FG7ssj'
+                    if page.is_visible(image_info_selector):
+                        print("[INFO] Found visible image info containers")
+                        # Click the first one using JavaScript for more reliable clicking
+                        page.evaluate('''
+                        () => {
+                            const imageInfos = document.querySelectorAll('div.info-FG7ssj');
+                            if (imageInfos.length > 0) {
+                                // Try to click it
+                                imageInfos[0].click();
+                                // Also try to click any child elements
+                                const children = imageInfos[0].querySelectorAll('*');
+                                for (let i = 0; i < children.length; i++) {
+                                    children[i].click();
+                                }
+                                return true;
+                            }
+                            return false;
+                        }
+                        ''')
+                        print("[INFO] Clicked on image container via JavaScript")
+                        time.sleep(3)
+                except Exception as e:
+                    print(f"[WARNING] Approach 2 failed: {e}")
+                
+                # Approach 3: Click on any image element
+                print("[INFO] Approach 3: Looking for any image elements...")
+                try:
+                    # Try to find and click on any image
+                    images = page.query_selector_all('img')
+                    print(f"[DEBUG] Found {len(images)} image elements")
+                    
+                    if len(images) > 0:
+                        for img in images:
+                            if img.is_visible():
+                                print("[INFO] Clicking on first visible image element")
+                                img.click()
+                                time.sleep(3)
+                                break
+                except Exception as e:
+                    print(f"[WARNING] Approach 3 failed: {e}")
             else:
-                print("[ERROR] No images found")
-                continue
-            time.sleep(2)  # Wait for image selection
-
-            # Input prompt
+                print("[ERROR] Could not confirm we're inside the 7.5 folder")
+                # Try fallback approach if we can't find the exact element
+                print("[INFO] Fallback: Looking for any element with 7.5 text")
+                try:
+                    fallback_selector = 'p.name-kS9Ae2:text("7.5.")'
+                    page.wait_for_selector(fallback_selector, timeout=10000)
+                    page.click(fallback_selector)
+                    print("[INFO] Clicked on element with 7.5 text")
+                    time.sleep(3)
+                except Exception as e:
+                    print(f"[ERROR] Fallback also failed: {e}")
+                    raise Exception("Failed to navigate to 7.5 folder")
+            
+            # Wait for any images to be visible
+            print("[INFO] Waiting for images to be visible...")
+            page.wait_for_selector('img.image-F76umv', timeout=15000, state='visible')
+            time.sleep(2)
+            
+            # We've already clicked an image in the folder verification section,
+            # so we can skip the image selection step here and go directly to the prompt
+            
+            # Wait longer for UI to update after image selection
+            print("[INFO] Waiting for UI to update after image selection...")
+            time.sleep(10)  # Increased wait time
+            
+            # Input prompt using the exact selector from the HTML
             print("[INFO] Looking for text prompt input...")
-            prompt_selector = 'div[aria-label="Text Prompt Input"]'
-            page.wait_for_selector(prompt_selector, timeout=10000)
-            page.click(prompt_selector)
+            # Use the exact selector from the provided HTML
+            exact_prompt_selector = 'div[aria-label="Text Prompt Input"][contenteditable="true"][role="textbox"]'
             
-            # Clear existing text if any
-            page.keyboard.press("Control+A")
-            page.keyboard.press("Delete")
+            # Wait for the prompt input to appear (with a longer timeout)
+            try:
+                print("[INFO] Waiting for text prompt input to appear...")
+                page.wait_for_selector(exact_prompt_selector, timeout=15000, state='visible')
+                print("[INFO] Text prompt input found!")
+            except Exception as e:
+                print(f"[WARNING] Could not find exact text prompt input: {e}")
+                # Try a more general selector
+                print("[INFO] Trying more general selector...")
+                try:
+                    page.wait_for_selector('div.textbox-lvV8X2', timeout=5000, state='visible')
+                    print("[INFO] Found textbox-lvV8X2 class element")
+                    exact_prompt_selector = 'div.textbox-lvV8X2'
+                except Exception as e2:
+                    print(f"[WARNING] Could not find textbox class either: {e2}")
+                    # Try even more general selectors
+                    general_selectors = [
+                        'div[aria-label="Text Prompt Input"]',
+                        'div[contenteditable="true"]',
+                        'div[role="textbox"]'
+                    ]
+                    for selector in general_selectors:
+                        try:
+                            if page.is_visible(selector):
+                                print(f"[INFO] Found input with selector: {selector}")
+                                exact_prompt_selector = selector
+                                break
+                        except:
+                            continue
             
-            # Type the prompt
-            page.fill(prompt_selector, prompt)
-            print(f"[INFO] Entered prompt: {prompt}")
-            time.sleep(1)  # Wait after typing
-
+            # Try to click and fill the prompt input
+            try:
+                # Click on the prompt input to focus it
+                print("[INFO] Clicking on text prompt input")
+                page.click(exact_prompt_selector)
+                time.sleep(1)
+                
+                # Clear any existing text
+                print("[INFO] Clearing existing text")
+                page.keyboard.press("Control+A")
+                page.keyboard.press("Delete")
+                time.sleep(0.5)
+                
+                # Type the prompt using keyboard typing (more reliable for contenteditable)
+                print(f"[INFO] Typing prompt: {prompt}")
+                page.keyboard.type(prompt)
+                print("[INFO] Successfully entered prompt text")
+                time.sleep(1)
+            except Exception as e:
+                print(f"[ERROR] Failed to enter prompt text: {e}")
+                # Try using JavaScript as a last resort
+                try:
+                    print("[INFO] Trying JavaScript to set prompt text")
+                    page.evaluate(f'''
+                    () => {{
+                        const promptInput = document.querySelector('div[aria-label="Text Prompt Input"]');
+                        if (promptInput) {{
+                            promptInput.textContent = "{prompt}";
+                            return true;
+                        }}
+                        return false;
+                    }}
+                    ''')
+                    print("[INFO] Set prompt text via JavaScript")
+                except Exception as js_error:
+                    print(f"[ERROR] JavaScript prompt entry also failed: {js_error}")
+                    continue
+            
             # Click Generate button
             print("[INFO] Looking for Generate button...")
             generate_selector = 'button:has-text("Generate")'
-            page.wait_for_selector(generate_selector, timeout=10000)
-            page.click(generate_selector)
-            print("[INFO] Clicked Generate button")
+            try:
+                page.wait_for_selector(generate_selector, timeout=10000)
+                page.click(generate_selector)
+                print("[INFO] Clicked Generate button")
+            except Exception as e:
+                print(f"[ERROR] Failed to click Generate button: {e}")
+                continue
 
             # Wait for video generation to complete (looking for "Done" or similar indicator)
             print("[INFO] Waiting for video generation to complete...")
@@ -232,14 +486,35 @@ def main():
             print("[ERROR] Failed to start browser - exiting")
             return
         
+        # Add a small delay to ensure AdsPower is fully initialized
+        time.sleep(5)
+        
         with sync_playwright() as p:
             # More robust connection with error handling
             try:
-                browser = p.chromium.connect(
-                    ws_url,
-                    timeout=30000,  # 30 second timeout
-                    headers={"User-Agent": "Mozilla/5.0"}
-                )
+                # Add retry mechanism for browser connection
+                max_connection_attempts = 3
+                connection_attempt = 0
+                
+                while connection_attempt < max_connection_attempts:
+                    try:
+                        connection_attempt += 1
+                        print(f"[INFO] Connection attempt {connection_attempt}/{max_connection_attempts}")
+                        
+                        # Add slow_mo parameter to make browser interactions more stable
+                        browser = p.chromium.connect_over_cdp(
+                            ws_url,
+                            timeout=30000,  # 30 second timeout
+                            slow_mo=100,  # Add 100ms delay between actions
+                            headers={"User-Agent": "Mozilla/5.0"}
+                        )
+                        print("[INFO] Browser connection successful")
+                        break
+                    except Exception as e:
+                        print(f"[ERROR] Connection attempt {connection_attempt} failed: {e}")
+                        if connection_attempt >= max_connection_attempts:
+                            raise
+                        time.sleep(5)  # Wait before retry
                 
                 # Verify connection
                 if not browser.contexts:
