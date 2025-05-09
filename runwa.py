@@ -256,74 +256,171 @@ def generate_video(page, prompt, max_retries=3):
                 # Try multiple approaches to find and click on images
                 print("[INFO] Looking for images in the 7.5 folder...")
                 
-                # Approach 1: Look for image titles
-                print("[INFO] Approach 1: Looking for image titles...")
-                image_title_selector = 'p.title-Epqee6'
+                # Use JavaScript to click on the first image - similar to how we opened the folder
+                print("[INFO] Using JavaScript to click on the first image in the folder...")
+                
+                # First, get all image titles to display what's available
                 try:
+                    image_title_selector = 'p.title-Epqee6'
                     page.wait_for_selector(image_title_selector, timeout=5000, state='visible')
                     image_titles = page.query_selector_all(image_title_selector)
                     print(f"[DEBUG] Found {len(image_titles)} image titles in the folder")
                     
-                    if len(image_titles) > 0:
-                        for i, title in enumerate(image_titles[:5]):
-                            if title.is_visible():
-                                text = title.inner_text().strip()
-                                print(f"[DEBUG] Image {i}: {text}")
-                        
-                        # Click on the first visible title
-                        for title in image_titles:
-                            if title.is_visible():
-                                print("[INFO] Clicking on first visible image title")
-                                title.click()
-                                time.sleep(3)
-                                break
+                    # Display the first few image titles
+                    for i, title in enumerate(image_titles[:5]):
+                        if title.is_visible():
+                            text = title.inner_text().strip()
+                            print(f"[DEBUG] Image {i}: {text}")
                 except Exception as e:
-                    print(f"[WARNING] Approach 1 failed: {e}")
+                    print(f"[WARNING] Could not list image titles: {e}")
                 
-                # Approach 2: Look for image containers
-                print("[INFO] Approach 2: Looking for image info containers...")
+                # Try multiple different click methods with fast clicks
+                # Function to check if we've reached the desired state
+                def check_image_selected():
+                    try:
+                        output_mode_selector = 'div[aria-label="Output mode"][role="radiogroup"]'
+                        return page.is_visible(output_mode_selector, timeout=3000)
+                    except Exception:
+                        return False
+                
+                # Method 1: Fast clicks on image container
+                print("[INFO] METHOD 1: Fast clicks on image container")
                 try:
                     image_info_selector = 'div.info-FG7ssj'
-                    if page.is_visible(image_info_selector):
-                        print("[INFO] Found visible image info containers")
-                        # Click the first one using JavaScript for more reliable clicking
-                        page.evaluate('''
-                        () => {
-                            const imageInfos = document.querySelectorAll('div.info-FG7ssj');
-                            if (imageInfos.length > 0) {
-                                // Try to click it
-                                imageInfos[0].click();
-                                // Also try to click any child elements
-                                const children = imageInfos[0].querySelectorAll('*');
-                                for (let i = 0; i < children.length; i++) {
-                                    children[i].click();
-                                }
-                                return true;
-                            }
-                            return false;
-                        }
-                        ''')
-                        print("[INFO] Clicked on image container via JavaScript")
-                        time.sleep(3)
-                except Exception as e:
-                    print(f"[WARNING] Approach 2 failed: {e}")
-                
-                # Approach 3: Click on any image element
-                print("[INFO] Approach 3: Looking for any image elements...")
-                try:
-                    # Try to find and click on any image
-                    images = page.query_selector_all('img')
-                    print(f"[DEBUG] Found {len(images)} image elements")
+                    page.wait_for_selector(image_info_selector, timeout=10000, state='visible')
+                    image_infos = page.query_selector_all(image_info_selector)
                     
-                    if len(images) > 0:
+                    if len(image_infos) > 0:
+                        first_image = image_infos[0]
+                        print("[INFO] Found first image, doing 4 fast clicks")
+                        
+                        # 4 fast clicks
+                        for i in range(4):
+                            first_image.click(force=True)
+                            time.sleep(0.1)  # Very short delay between clicks
+                        
+                        time.sleep(3)  # Wait to see if it worked
+                        
+                        if check_image_selected():
+                            print("[INFO] METHOD 1 SUCCEEDED: Image selected!")
+                        else:
+                            print("[INFO] METHOD 1 failed, trying next method")
+                    else:
+                        print("[WARNING] No image info containers found for Method 1")
+                except Exception as e:
+                    print(f"[WARNING] Method 1 failed with error: {e}")
+                
+                # Method 2: Fast clicks on image title
+                print("[INFO] METHOD 2: Fast clicks on image title")
+                try:
+                    image_title_selector = 'p.title-Epqee6'
+                    page.wait_for_selector(image_title_selector, timeout=5000, state='visible')
+                    image_titles = page.query_selector_all(image_title_selector)
+                    
+                    if len(image_titles) > 0 and image_titles[0].is_visible():
+                        print("[INFO] Found first image title, doing 4 fast clicks")
+                        
+                        # 4 fast clicks
+                        for i in range(4):
+                            image_titles[0].click(force=True)
+                            time.sleep(0.1)  # Very short delay between clicks
+                        
+                        time.sleep(3)  # Wait to see if it worked
+                        
+                        if check_image_selected():
+                            print("[INFO] METHOD 2 SUCCEEDED: Image selected!")
+                        else:
+                            print("[INFO] METHOD 2 failed, trying next method")
+                    else:
+                        print("[WARNING] No visible image titles found for Method 2")
+                except Exception as e:
+                    print(f"[WARNING] Method 2 failed with error: {e}")
+                
+                # Method 3: JavaScript rapid clicks
+                print("[INFO] METHOD 3: JavaScript rapid clicks")
+                try:
+                    result = page.evaluate('''
+                    () => {
+                        const imageInfos = document.querySelectorAll('div.info-FG7ssj');
+                        if (imageInfos.length > 0) {
+                            // Simulate multiple rapid clicks
+                            for (let i = 0; i < 4; i++) {
+                                imageInfos[0].click();
+                            }
+                            
+                            // Also try the title
+                            const title = imageInfos[0].querySelector('p.title-Epqee6');
+                            if (title) {
+                                for (let i = 0; i < 4; i++) {
+                                    title.click();
+                                }
+                            }
+                            
+                            return "Executed JavaScript rapid clicks";
+                        }
+                        return "No image info containers found for JavaScript clicks";
+                    }
+                    ''')
+                    print(f"[DEBUG] JavaScript rapid clicks result: {result}")
+                    time.sleep(3)  # Wait to see if it worked
+                    
+                    if check_image_selected():
+                        print("[INFO] METHOD 3 SUCCEEDED: Image selected!")
+                    else:
+                        print("[INFO] METHOD 3 failed, trying next method")
+                except Exception as e:
+                    print(f"[WARNING] Method 3 failed with error: {e}")
+                
+                # Method 4: Double clicks
+                print("[INFO] METHOD 4: Double clicks")
+                try:
+                    # Try double-clicking on image container
+                    image_info_selector = 'div.info-FG7ssj'
+                    if page.is_visible(image_info_selector):
+                        image_infos = page.query_selector_all(image_info_selector)
+                        if len(image_infos) > 0:
+                            print("[INFO] Double-clicking on image container")
+                            for i in range(2):  # Two double-clicks
+                                image_infos[0].dblclick(force=True)
+                                time.sleep(0.5)
+                            
+                            time.sleep(3)  # Wait to see if it worked
+                            
+                            if check_image_selected():
+                                print("[INFO] METHOD 4 SUCCEEDED: Image selected!")
+                            else:
+                                print("[INFO] METHOD 4 failed, trying next method")
+                        else:
+                            print("[WARNING] No image containers found for Method 4")
+                    else:
+                        print("[WARNING] Image container not visible for Method 4")
+                except Exception as e:
+                    print(f"[WARNING] Method 4 failed with error: {e}")
+                    
+                    # Verify we've selected an image by checking for the output mode radio group
+                    print("[INFO] Verifying image selection by checking for output mode radio group...")
+                    output_mode_selector = 'div[aria-label="Output mode"][role="radiogroup"]'
+                    
+                    try:
+                        page.wait_for_selector(output_mode_selector, timeout=10000)
+                        print("[INFO] Successfully selected an image! Output mode radio group is visible.")
+                    except Exception as e:
+                        print(f"[WARNING] Could not verify image selection: {e}")
+                        # Try clicking again on any visible image
+                        print("[INFO] Trying alternative approach to click an image...")
+                        
+                        # Try to click on any visible image element
+                        images = page.query_selector_all('img')
+                        print(f"[DEBUG] Found {len(images)} image elements")
+                        
                         for img in images:
                             if img.is_visible():
-                                print("[INFO] Clicking on first visible image element")
+                                print("[INFO] Clicking on a visible image element")
                                 img.click()
-                                time.sleep(3)
+                                time.sleep(5)
                                 break
                 except Exception as e:
-                    print(f"[WARNING] Approach 3 failed: {e}")
+                    print(f"[WARNING] JavaScript image click failed: {e}")
             else:
                 print("[ERROR] Could not confirm we're inside the 7.5 folder")
                 # Try fallback approach if we can't find the exact element
@@ -352,20 +449,20 @@ def generate_video(page, prompt, max_retries=3):
             
             # Input prompt using the exact selector from the HTML
             print("[INFO] Looking for text prompt input...")
-            # Use the exact selector from the provided HTML
-            exact_prompt_selector = 'div[aria-label="Text Prompt Input"][contenteditable="true"][role="textbox"]'
+            # Use the exact selector from the provided HTML - this is the exact one from the user's HTML
+            exact_prompt_selector = 'div.textbox-lvV8X2[aria-label="Text Prompt Input"][contenteditable="true"][role="textbox"]'
             
             # Wait for the prompt input to appear (with a longer timeout)
             try:
                 print("[INFO] Waiting for text prompt input to appear...")
-                page.wait_for_selector(exact_prompt_selector, timeout=15000, state='visible')
+                page.wait_for_selector(exact_prompt_selector, timeout=20000, state='visible')
                 print("[INFO] Text prompt input found!")
             except Exception as e:
                 print(f"[WARNING] Could not find exact text prompt input: {e}")
                 # Try a more general selector
                 print("[INFO] Trying more general selector...")
                 try:
-                    page.wait_for_selector('div.textbox-lvV8X2', timeout=5000, state='visible')
+                    page.wait_for_selector('div.textbox-lvV8X2', timeout=10000, state='visible')
                     print("[INFO] Found textbox-lvV8X2 class element")
                     exact_prompt_selector = 'div.textbox-lvV8X2'
                 except Exception as e2:
@@ -374,7 +471,8 @@ def generate_video(page, prompt, max_retries=3):
                     general_selectors = [
                         'div[aria-label="Text Prompt Input"]',
                         'div[contenteditable="true"]',
-                        'div[role="textbox"]'
+                        'div[role="textbox"]',
+                        'div[data-lexical-editor="true"]'
                     ]
                     for selector in general_selectors:
                         try:
@@ -384,6 +482,38 @@ def generate_video(page, prompt, max_retries=3):
                                 break
                         except:
                             continue
+            
+            # Try using JavaScript to find and interact with the text prompt input
+            if exact_prompt_selector is None:
+                print("[INFO] Using JavaScript to find and interact with text prompt input")
+                try:
+                    result = page.evaluate('''
+                    () => {
+                        // Try multiple ways to find the text input
+                        let promptInput = document.querySelector('div[aria-label="Text Prompt Input"]');
+                        if (!promptInput) {
+                            promptInput = document.querySelector('div[contenteditable="true"][role="textbox"]');
+                        }
+                        if (!promptInput) {
+                            promptInput = document.querySelector('div.textbox-lvV8X2');
+                        }
+                        if (!promptInput) {
+                            promptInput = document.querySelector('div[data-lexical-editor="true"]');
+                        }
+                        
+                        if (promptInput) {
+                            // Try to focus and click the element
+                            promptInput.focus();
+                            promptInput.click();
+                            return "Found and focused text prompt input via JavaScript";
+                        }
+                        return "Could not find text prompt input via JavaScript";
+                    }
+                    ''')
+                    print(f"[DEBUG] JavaScript text input result: {result}")
+                    time.sleep(2)
+                except Exception as e:
+                    print(f"[WARNING] JavaScript text input approach failed: {e}")
             
             # Try to click and fill the prompt input
             try:
