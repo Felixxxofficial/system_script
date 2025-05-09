@@ -133,6 +133,15 @@ def process_video_folder(folder_path):
         # Update the existing numbers after each file is processed
         existing_numbers = get_existing_img_numbers(folder_path)
 
+def get_dropbox_folder(source_folder):
+    """Get the corresponding Dropbox folder name based on the source folder"""
+    # Extract the category name from the source folder path
+    parts = source_folder.split(os.sep)
+    for part in parts:
+        if part in ['Student', 'Goth', 'Nature', 'Normal', 'Construction', 'Gamer']:
+            return os.path.join(r"C:\Users\felix\Dropbox", part)
+    return None
+
 # Process a single image file
 def process_image(image_path, destination_folder, existing_numbers):
     if not os.path.exists(image_path):
@@ -308,6 +317,11 @@ def process_video(video_path, destination_folder, existing_numbers):
         return
     mime_type = "video/quicktime" if ext == ".mov" else "video/mp4"
 
+    # Skip if already processed
+    if os.path.basename(video_path).startswith('IMG_'):
+        print(f"Skipping already processed file: {video_path}")
+        return
+
     # Get current time (UTC) and subtract random hours (1-6 hours ago)
     now = datetime.now(UTC)
     time_offset = random.randint(1, 6)
@@ -467,6 +481,21 @@ def process_video(video_path, destination_folder, existing_numbers):
         os.remove(video_path)
         
         print(f"Successfully processed: {new_path}")
+        
+        # Copy to Dropbox folder
+        dropbox_folder = get_dropbox_folder(destination_folder)
+        if dropbox_folder:
+            try:
+                # Create Dropbox folder if it doesn't exist
+                os.makedirs(dropbox_folder, exist_ok=True)
+                
+                # Copy the renamed video to Dropbox
+                dropbox_path = os.path.join(dropbox_folder, new_filename)
+                print(f"  Copying to Dropbox: {dropbox_path}")
+                shutil.copy2(new_path, dropbox_path)
+                print(f"  Successfully copied to Dropbox: {dropbox_path}")
+            except Exception as e:
+                print(f"  Error copying to Dropbox: {e}")
     except Exception as e:
         print(f"Error processing video {os.path.basename(video_path)}: {e}")
         # Cleanup if there was an error

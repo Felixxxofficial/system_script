@@ -2,6 +2,7 @@ import subprocess
 import os
 import shutil
 import sys
+from datetime import date  # Import the date module
 
 def extract_frames(video_path, output_dir, frame_rate=3):
     """Extract frames from an MP4 video using FFmpeg."""
@@ -12,9 +13,10 @@ def extract_frames(video_path, output_dir, frame_rate=3):
         print(f"Error: Video file '{video_path}' does not exist.")
         return False
 
-    # Create a subfolder for this specific video
+    # Create a subfolder for this specific video with today's date and video name
     video_name = os.path.splitext(os.path.basename(video_path))[0]
-    video_output_dir = os.path.join(output_dir, video_name)
+    today_date = date.today().strftime("%Y-%m-%d")
+    video_output_dir = os.path.join(output_dir, f"{today_date}_{video_name}")
     
     # Clear existing output folder if it exists
     if os.path.exists(video_output_dir):
@@ -48,56 +50,55 @@ def extract_frames(video_path, output_dir, frame_rate=3):
         print("Error: FFmpeg executable not found at C:\\ffmpeg\\bin\\ffmpeg.exe.")
         return False
 
-def process_directory(frames_dir):
-    """Process all MP4 files in a frames directory and extract frames to subdirectories."""
-    print(f"\nProcessing directory: {frames_dir}")
+def process_directory(video_dir, frames_dir):
+    """Process all MP4 files in a video directory and extract frames to the frames directory."""
+    print(f"\nProcessing video directory: {video_dir}")
     
-    # Check if directory exists
-    if not os.path.exists(frames_dir):
-        print(f"Error: Frames directory '{frames_dir}' not found.")
-        # Create the directory if it doesn't exist
-        try:
-            os.makedirs(frames_dir)
-            print(f"Created directory: {frames_dir}")
-        except Exception as e:
-            print(f"Failed to create directory: {e}")
-            return False
+    # Check if video directory exists
+    if not os.path.exists(video_dir):
+        print(f"Error: Video directory '{video_dir}' not found.")
+        return False
     
-    # Get all MP4 files in the directory
+    # Get all MP4 files in the video directory
     try:
-        video_files = [f for f in os.listdir(frames_dir) if f.lower().endswith('.mp4')]
+        video_files = [f for f in os.listdir(video_dir) if f.lower().endswith('.mp4')]
     except FileNotFoundError:
-        print(f"Error: Could not access directory '{frames_dir}'.")
+        print(f"Error: Could not access directory '{video_dir}'.")
         return False
     
     if not video_files:
-        print(f"No MP4 files found in '{frames_dir}'.")
+        print(f"No MP4 files found in '{video_dir}'.")
         return True
     
-    print(f"Found {len(video_files)} MP4 files to process in {frames_dir}:")
-    for video_file in video_files:
-        print(f"- {video_file}")
+    # Find the most recent video based on creation time
+    most_recent_video = max(video_files, key=lambda f: os.path.getmtime(os.path.join(video_dir, f)))
+    print(f"Most recent video: {most_recent_video}")
     
-    # Process each video
-    success_count = 0
-    for video_file in video_files:
-        video_path = os.path.join(frames_dir, video_file)
-        print(f"\nProcessing: {video_file}")
-        
-        # Extract frames
-        if extract_frames(video_path, frames_dir, frame_rate=3):
-            print(f"Extraction completed successfully for {video_file}!")
-            success_count += 1
-        else:
-            print(f"Extraction failed for {video_file}. See errors above for details.")
+    # Process the most recent video
+    video_path = os.path.join(video_dir, most_recent_video)
+    print(f"\nProcessing: {most_recent_video}")
     
-    print(f"\nProcessed {success_count} out of {len(video_files)} videos in {frames_dir}")
-    return True
+    # Extract frames to the frames directory
+    if extract_frames(video_path, frames_dir, frame_rate=3):
+        print(f"Extraction completed successfully for {most_recent_video}!")
+        return True
+    else:
+        print(f"Extraction failed for {most_recent_video}. See errors above for details.")
+        return False
 
 def main():
     print("Frame Extraction Script Started")
     
-    # Define frames directories to process
+    # Define video and frames directories to process
+    video_directories = [
+        r"C:\Users\felix\OFM\Reels\Images\Student\Video",
+        r"C:\Users\felix\OFM\Reels\Images\Goth\Video",
+        r"C:\Users\felix\OFM\Reels\Images\Nature\Video",
+        r"C:\Users\felix\OFM\Reels\Images\Normal\Video",
+        r"C:\Users\felix\OFM\Reels\Images\Construction\Video",
+        r"C:\Users\felix\OFM\Reels\Images\Gamer\Video"
+    ]
+    
     frames_directories = [
         r"C:\Users\felix\OFM\Reels\Images\Student\Frames",
         r"C:\Users\felix\OFM\Reels\Images\Goth\Frames",
@@ -108,11 +109,11 @@ def main():
     ]
     
     # Process each directory
-    total_dirs = len(frames_directories)
+    total_dirs = len(video_directories)
     processed_dirs = 0
     
-    for frames_dir in frames_directories:
-        if process_directory(frames_dir):
+    for video_dir, frames_dir in zip(video_directories, frames_directories):
+        if process_directory(video_dir, frames_dir):
             processed_dirs += 1
     
     print(f"\nProcessed {processed_dirs} out of {total_dirs} directories")
