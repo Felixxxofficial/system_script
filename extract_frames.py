@@ -50,11 +50,12 @@ def main():
     
     # Define the directories containing videos
     video_folders = [
-        r"C:\Users\felix\OFM\Reels\Images\Student\Video",
-        r"C:\Users\felix\OFM\Reels\Images\Goth\Video",
-        r"C:\Users\felix\OFM\Reels\Images\Nature\Video",
-        r"C:\Users\felix\OFM\Reels\Images\Normal\Video",
-        r"C:\Users\felix\OFM\Reels\Images\Construction\Video"
+        r"C:\Users\felix\OFM\Reels\Images\Student\Frames",
+        r"C:\Users\felix\OFM\Reels\Images\Goth\Frames",
+        r"C:\Users\felix\OFM\Reels\Images\Nature\Frames",
+        r"C:\Users\felix\OFM\Reels\Images\Normal\Frames",
+        r"C:\Users\felix\OFM\Reels\Images\Construction\Frames",
+        r"C:\Users\felix\OFM\Reels\Images\Gamer\Frames"
     ]
     
     # Process each directory

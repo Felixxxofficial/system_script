@@ -18,6 +18,9 @@ ADPOWER_PROFILE_ID = os.getenv('ADPOWER_PROFILE_ID', 'kxslwbx')  # AdsPower prof
 ADPOWER_API_URL = os.getenv('ADPOWER_API_URL', 'http://127.0.0.1:50325')  # AdsPower local API
 RUNWAY_URL = 'https://app.runwayml.com/video-tools/teams/janotad/dashboard'
 
+# Default prompt
+DEFAULT_PROMPT = "the girl is smiling"
+
 stop_scraping = False
 
 def load_cookies():
@@ -404,6 +407,8 @@ def generate_video(page, prompt, max_retries=3):
                     try:
                         page.wait_for_selector(output_mode_selector, timeout=10000)
                         print("[INFO] Successfully selected an image! Output mode radio group is visible.")
+                        # Set a flag to indicate we've successfully selected an image
+                        image_selected = True
                     except Exception as e:
                         print(f"[WARNING] Could not verify image selection: {e}")
                         # Try clicking again on any visible image
@@ -418,9 +423,14 @@ def generate_video(page, prompt, max_retries=3):
                                 print("[INFO] Clicking on a visible image element")
                                 img.click()
                                 time.sleep(5)
+                                # Check again if we've selected an image
+                                if page.is_visible(output_mode_selector):
+                                    print("[INFO] Image selected after alternative approach")
+                                    image_selected = True
                                 break
                 except Exception as e:
                     print(f"[WARNING] JavaScript image click failed: {e}")
+                    image_selected = False
             else:
                 print("[ERROR] Could not confirm we're inside the 7.5 folder")
                 # Try fallback approach if we can't find the exact element
@@ -431,14 +441,20 @@ def generate_video(page, prompt, max_retries=3):
                     page.click(fallback_selector)
                     print("[INFO] Clicked on element with 7.5 text")
                     time.sleep(3)
+                    image_selected = False
                 except Exception as e:
                     print(f"[ERROR] Fallback also failed: {e}")
                     raise Exception("Failed to navigate to 7.5 folder")
             
-            # Wait for any images to be visible
-            print("[INFO] Waiting for images to be visible...")
-            page.wait_for_selector('img.image-F76umv', timeout=15000, state='visible')
-            time.sleep(2)
+            # Skip the wait for images if we've already confirmed the image is selected
+            if not image_selected:
+                print("[INFO] Waiting for images to be visible...")
+                try:
+                    page.wait_for_selector('img.image-F76umv', timeout=5000, state='visible')
+                    time.sleep(2)
+                except Exception as e:
+                    print(f"[WARNING] Could not find images, but continuing anyway: {e}")
+                    # Continue anyway since we might already be at the prompt stage
             
             # We've already clicked an image in the folder verification section,
             # so we can skip the image selection step here and go directly to the prompt
@@ -449,31 +465,34 @@ def generate_video(page, prompt, max_retries=3):
             
             # Input prompt using the exact selector from the HTML
             print("[INFO] Looking for text prompt input...")
-            # Use the exact selector from the provided HTML - this is the exact one from the user's HTML
-            exact_prompt_selector = 'div.textbox-lvV8X2[aria-label="Text Prompt Input"][contenteditable="true"][role="textbox"]'
+            # Use the exact selector provided by the user
+            exact_prompt_selector = 'div.textbox-lvV8X2[contenteditable="true"][role="textbox"][data-lexical-editor="true"]'
             
             # Wait for the prompt input to appear (with a longer timeout)
             try:
                 print("[INFO] Waiting for text prompt input to appear...")
-                page.wait_for_selector(exact_prompt_selector, timeout=20000, state='visible')
+                page.wait_for_selector(exact_prompt_selector, timeout=10000, state='visible')
                 print("[INFO] Text prompt input found!")
             except Exception as e:
                 print(f"[WARNING] Could not find exact text prompt input: {e}")
                 # Try a more general selector
                 print("[INFO] Trying more general selector...")
                 try:
-                    page.wait_for_selector('div.textbox-lvV8X2', timeout=10000, state='visible')
+                    # Try the simpler selector
+                    simple_selector = 'div.textbox-lvV8X2'
+                    page.wait_for_selector(simple_selector, timeout=5000, state='visible')
                     print("[INFO] Found textbox-lvV8X2 class element")
-                    exact_prompt_selector = 'div.textbox-lvV8X2'
+                    exact_prompt_selector = simple_selector
                 except Exception as e2:
                     print(f"[WARNING] Could not find textbox class either: {e2}")
-                    # Try even more general selectors
+                    # Try even more general selectors in order of specificity
                     general_selectors = [
                         'div[aria-label="Text Prompt Input"]',
+                        'div[data-lexical-editor="true"]',
                         'div[contenteditable="true"]',
-                        'div[role="textbox"]',
-                        'div[data-lexical-editor="true"]'
+                        'div[role="textbox"]'
                     ]
+                    
                     for selector in general_selectors:
                         try:
                             if page.is_visible(selector):
@@ -515,74 +534,212 @@ def generate_video(page, prompt, max_retries=3):
                 except Exception as e:
                     print(f"[WARNING] JavaScript text input approach failed: {e}")
             
-            # Try to click and fill the prompt input
+            # Try to input the prompt
             try:
-                # Click on the prompt input to focus it
-                print("[INFO] Clicking on text prompt input")
+                print(f"[INFO] Entering prompt: {prompt}")
+                # First try to click on the input field
                 page.click(exact_prompt_selector)
                 time.sleep(1)
                 
-                # Clear any existing text
-                print("[INFO] Clearing existing text")
-                page.keyboard.press("Control+A")
-                page.keyboard.press("Delete")
-                time.sleep(0.5)
+                # Try multiple methods to enter the text, starting with the most reliable ones
+                methods_tried = 0
+                success = False
                 
-                # Type the prompt using keyboard typing (more reliable for contenteditable)
-                print(f"[INFO] Typing prompt: {prompt}")
-                page.keyboard.type(prompt)
-                print("[INFO] Successfully entered prompt text")
-                time.sleep(1)
-            except Exception as e:
-                print(f"[ERROR] Failed to enter prompt text: {e}")
-                # Try using JavaScript as a last resort
+                # Method 1: JavaScript direct content setting
                 try:
-                    print("[INFO] Trying JavaScript to set prompt text")
-                    page.evaluate(f'''
-                    () => {{
-                        const promptInput = document.querySelector('div[aria-label="Text Prompt Input"]');
-                        if (promptInput) {{
-                            promptInput.textContent = "{prompt}";
-                            return true;
-                        }}
-                        return false;
+                    js_result = page.evaluate(f"""
+                    const element = document.querySelector('{exact_prompt_selector}');
+                    if (element) {{
+                        // Clear any existing content first
+                        element.innerHTML = '<p>' + '{prompt}' + '</p>';
+                        // Dispatch input event to trigger any listeners
+                        const event = new Event('input', {{ bubbles: true }});
+                        element.dispatchEvent(event);
+                        return 'Prompt set via JavaScript';
+                    }} else {{
+                        return 'Element not found';
                     }}
-                    ''')
-                    print("[INFO] Set prompt text via JavaScript")
-                except Exception as js_error:
-                    print(f"[ERROR] JavaScript prompt entry also failed: {js_error}")
-                    continue
-            
+                    """)
+                    print(f"[INFO] JavaScript result: {js_result}")
+                    if "Prompt set" in js_result:
+                        success = True
+                    methods_tried += 1
+                except Exception as e:
+                    print(f"[WARNING] JavaScript method failed: {e}")
+                
+                # Method 2: Try to use fill method if JavaScript failed
+                if not success:
+                    try:
+                        page.fill(exact_prompt_selector, prompt)
+                        print("[INFO] Entered prompt using fill method")
+                        success = True
+                        methods_tried += 1
+                    except Exception as e:
+                        print(f"[WARNING] Could not fill prompt: {e}")
+                
+                # Method 3: Try to use type method if previous methods failed
+                if not success:
+                    try:
+                        page.type(exact_prompt_selector, prompt)
+                        print("[INFO] Entered prompt using type method")
+                        success = True
+                        methods_tried += 1
+                    except Exception as e:
+                        print(f"[WARNING] Could not type prompt: {e}")
+                
+                # Method 4: Try keyboard shortcuts (Ctrl+A, Delete, then type)
+                if not success:
+                    try:
+                        page.keyboard.press("Control+a")
+                        page.keyboard.press("Delete")
+                        page.keyboard.type(prompt)
+                        print("[INFO] Entered prompt using keyboard shortcuts")
+                        success = True
+                        methods_tried += 1
+                    except Exception as e:
+                        print(f"[WARNING] Keyboard method failed: {e}")
+                
+                if success:
+                    print(f"[INFO] Successfully entered prompt after trying {methods_tried} methods")
+                else:
+                    print("[ERROR] All methods to enter prompt failed")
+                    raise Exception("Failed to enter prompt")
+                
+                # Let the page process the input
+                time.sleep(2)
+            except Exception as e:
+                print(f"[ERROR] Failed to enter prompt: {e}")
+                continue
+                
             # Click Generate button
             print("[INFO] Looking for Generate button...")
-            generate_selector = 'button:has-text("Generate")'
+            generate_selector = 'button[data-soft-disabled="false"][type="button"][data-rac]:has-text("Generate")'
             try:
                 page.wait_for_selector(generate_selector, timeout=10000)
+                print("[INFO] Found Generate button, clicking it...")
                 page.click(generate_selector)
                 print("[INFO] Clicked Generate button")
+                time.sleep(3)  # Wait for the UI to update
             except Exception as e:
                 print(f"[ERROR] Failed to click Generate button: {e}")
-                continue
-
-            # Wait for video generation to complete (looking for "Done" or similar indicator)
-            print("[INFO] Waiting for video generation to complete...")
-            done_selector = 'text="Done" >> visible=true, text="Complete" >> visible=true, text="Download" >> visible=true'
+                # Try a more general selector
+                try:
+                    fallback_selector = 'button:has-text("Generate")'
+                    page.wait_for_selector(fallback_selector, timeout=5000)
+                    page.click(fallback_selector)
+                    print("[INFO] Clicked Generate button using fallback selector")
+                    time.sleep(3)  # Wait for the UI to update
+                except Exception as e2:
+                    print(f"[ERROR] Fallback also failed: {e2}")
+                    continue
+            
+            # Focus on the virtuoso-item-list container and scroll down to see the queue status
+            print("[INFO] Focusing on the list container and scrolling down to check queue status...")
             try:
-                page.wait_for_selector(done_selector, timeout=300000)  # 5-minute timeout
-                print("[INFO] Video generation completed")
-                return True
-            except TimeoutError:
-                print("[WARNING] Video generation timeout - checking if still processing...")
-                # Check if there's a progress indicator
-                if page.query_selector('text="Processing" >> visible=true'):
-                    print("[INFO] Still processing, waiting longer...")
+                # First try to focus on the list container
+                list_container_selector = 'div[data-testid="virtuoso-item-list"]'
+                if page.is_visible(list_container_selector):
+                    # Click on the container to focus it
+                    page.click(list_container_selector)
+                    print("[INFO] Successfully focused on the list container")
+                    # Now scroll down
+                    page.evaluate("window.scrollBy(0, 300)")
+                else:
+                    print("[WARNING] List container not visible, trying general scroll")
+                    page.evaluate("window.scrollBy(0, 300)")
+                time.sleep(1)
+            except Exception as e:
+                print(f"[WARNING] Error focusing on list container: {e}")
+                # Fall back to general scroll
+                page.evaluate("window.scrollBy(0, 300)")
+                time.sleep(1)
+            
+            # Check for "In queue" status using the exact HTML structure
+            print("[INFO] Checking for 'In queue' status...")
+            
+            # Try multiple selectors to find the queue status
+            queue_selectors = [
+                'div.percentage-o2hVFS:text("In queue")',  # Direct text match
+                'div.percentage-o2hVFS',                   # Class only
+                'div.progress-bar-container-lIQqmt div.percentage-o2hVFS'  # Parent-child relationship
+            ]
+            
+            in_queue_found = False
+            queue_element = None
+            
+            # Try each selector until we find the queue status
+            for selector in queue_selectors:
+                try:
+                    elements = page.query_selector_all(selector)
+                    print(f"[DEBUG] Found {len(elements)} elements with selector '{selector}'")
+                    
+                    for element in elements:
+                        if element.is_visible():
+                            text = element.inner_text().strip()
+                            print(f"[DEBUG] Found visible element with text: '{text}'")
+                            
+                            if "In queue" in text:
+                                in_queue_found = True
+                                queue_element = element
+                                print(f"[INFO] Found 'In queue' status with selector: {selector}")
+                                break
+                    
+                    if in_queue_found:
+                        break
+                        
+                except Exception as e:
+                    print(f"[WARNING] Error with selector '{selector}': {e}")
+            
+            # If we found the queue status
+            if in_queue_found:
+                print("[INFO] Video is in queue")
+                
+                # Wait for the video to be ready (check every 30 seconds for up to 2 minutes)
+                max_wait_time = 120  # 2 minutes
+                start_time = time.time()
+                
+                while time.time() - start_time < max_wait_time:
+                    # Take a screenshot for debugging
+                    screenshot_path = os.path.join(SCRIPT_DIR, f"queue_status_{int(time.time())}.png")
+                    page.screenshot(path=screenshot_path)
+                    print(f"[DEBUG] Saved queue status screenshot to {screenshot_path}")
+                    
+                    # Check if "In queue" is still visible by checking the text of the element
                     try:
-                        page.wait_for_selector(done_selector, timeout=300000)  # Additional 5 minutes
-                        print("[INFO] Video generation completed after extended wait")
+                        if queue_element and queue_element.is_visible():
+                            current_text = queue_element.inner_text().strip()
+                            print(f"[DEBUG] Current queue element text: '{current_text}'")
+                            
+                            if "In queue" not in current_text:
+                                print("[INFO] Queue status changed from 'In queue' to '{current_text}' - video is ready!")
+                                return True
+                        else:
+                            # If the element is no longer visible, the video might be ready
+                            print("[INFO] Queue status element is no longer visible - video might be ready!")
+                            return True
+                    except Exception as e:
+                        print(f"[WARNING] Error checking queue element: {e}")
+                        # Element might have been removed from DOM, which could indicate the video is ready
+                        print("[INFO] Queue element might have been removed - video might be ready!")
                         return True
-                    except TimeoutError:
-                        print("[ERROR] Video generation timed out after extended wait")
-                        continue
+                    
+                    print("[INFO] Video still in queue, waiting 30 seconds...")
+                    time.sleep(30)  # Wait 30 seconds before checking again
+                    
+                # If we've waited the maximum time and it's still in queue
+                try:
+                    if queue_element and queue_element.is_visible() and "In queue" in queue_element.inner_text().strip():
+                        print("[WARNING] Video still in queue after maximum wait time")
+                    else:
+                        print("[INFO] Video is ready after waiting")
+                        return True
+                except Exception as e:
+                    print(f"[WARNING] Error checking final queue status: {e}")
+                    return True
+            else:
+                print("[INFO] Video is not in queue - checking if it's ready")
+                time.sleep(5)  # Give it a moment to process
+                return True
 
         except Exception as e:
             print(f"[ERROR] Failed to generate video: {e}")
@@ -677,10 +834,9 @@ def main():
                 # Save cookies
                 save_cookies(browser.contexts[0])
                 
-                # Test video generation with a sample prompt
-                test_prompt = "Here is my test prompt"
-                print(f"[INFO] Testing video generation with prompt: {test_prompt}")
-                success = generate_video(page, test_prompt)
+                # Test video generation with our default prompt
+                print(f"[INFO] Testing video generation with prompt: {DEFAULT_PROMPT}")
+                success = generate_video(page, DEFAULT_PROMPT)
                 
                 if success:
                     print("[INFO] Video generation test successful!")
