@@ -633,29 +633,95 @@ def generate_video(page, prompt, max_retries=3):
                     print(f"[ERROR] Fallback also failed: {e2}")
                     continue
             
-            # Focus on the virtuoso-item-list container and scroll down to see the queue status
-            print("[INFO] Focusing on the list container and scrolling down to check queue status...")
+            # Focus on the virtuoso-item-list element and scroll to see the queue status
+            print("[INFO] Focusing on the virtuoso-item-list and scrolling to check queue status...")
             try:
-                # First try to focus on the list container
-                list_container_selector = 'div[data-testid="virtuoso-item-list"]'
-                if page.is_visible(list_container_selector):
-                    # Click on the container to focus it
-                    page.click(list_container_selector)
-                    print("[INFO] Successfully focused on the list container")
-                    # Now scroll down
-                    page.evaluate("window.scrollBy(0, 300)")
+                # First try to focus on the virtuoso-item-list
+                virtuoso_item_list = 'div[data-testid="virtuoso-item-list"]'
+                if page.is_visible(virtuoso_item_list):
+                    # Click on the list to focus it
+                    page.click(virtuoso_item_list)
+                    print("[INFO] Successfully focused on the virtuoso-item-list")
+                    time.sleep(0.5)
+                    
+                    # Get the current scroll position
+                    initial_position = page.evaluate(f"""
+                    () => {{
+                        const list = document.querySelector('{virtuoso_item_list}');
+                        if (list) {{
+                            // Find the parent scroller
+                            const scroller = list.closest('[data-testid="virtuoso-scroller"]');
+                            if (scroller) {{
+                                return scroller.scrollTop;
+                            }}
+                            return null;
+                        }}
+                        return null;
+                    }}
+                    """)
+                    print(f"[INFO] Initial scroll position: {initial_position}")
+                    
+                    # Scroll up just a little bit (like a mouse wheel)
+                    result = page.evaluate(f"""
+                    () => {{
+                        const list = document.querySelector('{virtuoso_item_list}');
+                        if (list) {{
+                            // Find the parent scroller
+                            const scroller = list.closest('[data-testid="virtuoso-scroller"]');
+                            if (scroller) {{
+                                // Store current position
+                                const currentPos = scroller.scrollTop;
+                                // Scroll up just a little bit (150 pixels, like a few mouse wheel scrolls)
+                                scroller.scrollTop = currentPos - 150;
+                                return `Scrolled up a little from ${{currentPos}} to ${{scroller.scrollTop}}`;
+                            }}
+                            return "Parent scroller not found";
+                        }}
+                        return "List not found";
+                    }}
+                    """)
+                    print(f"[INFO] {result}")
+                    
+                    # Stay at this position for 1 second
+                    print("[INFO] Staying at this position for 1 second...")
+                    time.sleep(1)
+                    
+                    # No screenshot needed
+                    
+                    # Now scroll down aggressively to check for 'In queue' text
+                    print("[INFO] Now scrolling down aggressively to check for queue status...")
+                    
+                    # Scroll down by a large increment
+                    result = page.evaluate(f"""
+                    () => {{
+                        const list = document.querySelector('{virtuoso_item_list}');
+                        if (list) {{
+                            // Find the parent scroller
+                            const scroller = list.closest('[data-testid="virtuoso-scroller"]');
+                            if (scroller) {{
+                                const currentPos = scroller.scrollTop;
+                                // Scroll down by a large increment (1000 pixels)
+                                scroller.scrollTop = currentPos + 1000;
+                                return `Scrolled down aggressively from ${{currentPos}} to ${{scroller.scrollTop}}`;
+                            }}
+                            return "Parent scroller not found";
+                        }}
+                        return "List not found";
+                    }}
+                    """)
+                    print(f"[INFO] {result}")
+                    time.sleep(1)  # Give time for content to load
+                    
+                    # No screenshot needed
                 else:
-                    print("[WARNING] List container not visible, trying general scroll")
+                    print("[WARNING] Virtuoso-item-list not visible, trying general scroll")
                     page.evaluate("window.scrollBy(0, 300)")
                 time.sleep(1)
             except Exception as e:
-                print(f"[WARNING] Error focusing on list container: {e}")
+                print(f"[WARNING] Error focusing on virtuoso-item-list: {e}")
                 # Fall back to general scroll
                 page.evaluate("window.scrollBy(0, 300)")
                 time.sleep(1)
-            
-            # Check for "In queue" status using the exact HTML structure
-            print("[INFO] Checking for 'In queue' status...")
             
             # Try multiple selectors to find the queue status
             queue_selectors = [
@@ -699,31 +765,106 @@ def generate_video(page, prompt, max_retries=3):
                 start_time = time.time()
                 
                 while time.time() - start_time < max_wait_time:
-                    # Take a screenshot for debugging
-                    screenshot_path = os.path.join(SCRIPT_DIR, f"queue_status_{int(time.time())}.png")
-                    page.screenshot(path=screenshot_path)
-                    print(f"[DEBUG] Saved queue status screenshot to {screenshot_path}")
+                    print("\n[INFO] Checking queue status...")
                     
-                    # Check if "In queue" is still visible by checking the text of the element
+                    # Perform a more thorough check by scrolling both up and down
                     try:
-                        if queue_element and queue_element.is_visible():
-                            current_text = queue_element.inner_text().strip()
-                            print(f"[DEBUG] Current queue element text: '{current_text}'")
+                        # Focus on the virtuoso-item-list again
+                        if page.is_visible(virtuoso_item_list):
+                            # Click on the list to focus it
+                            page.click(virtuoso_item_list)
+                            print("[INFO] Focused on virtuoso-item-list for queue check")
+                            time.sleep(0.5)
                             
-                            if "In queue" not in current_text:
-                                print("[INFO] Queue status changed from 'In queue' to '{current_text}' - video is ready!")
-                                return True
+                            # First scroll up to check for queue message in upper areas
+                            print("[INFO] Scrolling up to check for queue message...")
+                            page.evaluate(f"""
+                            () => {{
+                                const list = document.querySelector('{virtuoso_item_list}');
+                                if (list) {{
+                                    const scroller = list.closest('[data-testid="virtuoso-scroller"]');
+                                    if (scroller) {{
+                                        const currentPos = scroller.scrollTop;
+                                        scroller.scrollTop = currentPos - 300;
+                                    }}
+                                }}
+                            }}
+                            """)
+                            time.sleep(1)
+                            
+                            # Check for queue message or percentage
+                            still_in_queue = False
+                            percentage_text = None
+                            
+                            # First check for the queue message
+                            for selector in queue_selectors:
+                                elements = page.query_selector_all(selector)
+                                for element in elements:
+                                    if element.is_visible():
+                                        text = element.inner_text().strip()
+                                        if "In queue" in text:
+                                            still_in_queue = True
+                                            print("[INFO] Video still in queue (found while scrolling up)")
+                                            break
+                                        elif "%" in text:
+                                            still_in_queue = True
+                                            percentage_text = text
+                                            print(f"[INFO] Video processing: {percentage_text} (found while scrolling up)")
+                                            break
+                                if still_in_queue:
+                                    break
+                            
+                            # If not found while scrolling up, scroll down to check lower areas
+                            if not still_in_queue:
+                                print("[INFO] Scrolling down to check for queue message...")
+                                page.evaluate(f"""
+                                () => {{
+                                    const list = document.querySelector('{virtuoso_item_list}');
+                                    if (list) {{
+                                        const scroller = list.closest('[data-testid="virtuoso-scroller"]');
+                                        if (scroller) {{
+                                            const currentPos = scroller.scrollTop;
+                                            scroller.scrollTop = currentPos + 600; // Scroll down significantly
+                                        }}
+                                    }}
+                                }}
+                                """)
+                                time.sleep(1)
+                                
+                                # No screenshot needed
+                                
+                                # Check again after scrolling down
+                                for selector in queue_selectors:
+                                    elements = page.query_selector_all(selector)
+                                    for element in elements:
+                                        if element.is_visible():
+                                            text = element.inner_text().strip()
+                                            if "In queue" in text:
+                                                still_in_queue = True
+                                                print("[INFO] Video still in queue (found while scrolling down)")
+                                                break
+                                            elif "%" in text:
+                                                still_in_queue = True
+                                                percentage_text = text
+                                                print(f"[INFO] Video processing: {percentage_text} (found while scrolling down)")
+                                                break
+                                    if still_in_queue:
+                                        break
+                            
+                            # If we found the queue message, the video is still processing
+                            if still_in_queue:
+                                print("[INFO] 'In queue' message found - video is still processing")
+                            # If we didn't find any queue messages after scrolling both up and down
+                            else:
+                                print("[INFO] No 'In queue' message found - video is ready!")
+                                return True  # Return True when the queue message disappears
                         else:
-                            # If the element is no longer visible, the video might be ready
-                            print("[INFO] Queue status element is no longer visible - video might be ready!")
-                            return True
+                            print("[WARNING] Virtuoso-item-list not visible for queue check")
                     except Exception as e:
-                        print(f"[WARNING] Error checking queue element: {e}")
-                        # Element might have been removed from DOM, which could indicate the video is ready
-                        print("[INFO] Queue element might have been removed - video might be ready!")
-                        return True
+                        print(f"[WARNING] Error during queue check scrolling: {e}")
                     
-                    print("[INFO] Video still in queue, waiting 30 seconds...")
+                    # If we're still in the loop, the video is still in queue
+                    print("[INFO] Video still in queue, waiting 30 seconds before checking again...")
                     time.sleep(30)  # Wait 30 seconds before checking again
                     
                 # If we've waited the maximum time and it's still in queue
