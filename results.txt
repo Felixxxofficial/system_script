@@ -1,0 +1,839 @@
+PS C:\Users\felix\Scripts> & "C:/Program Files/Python313/python.exe" c:/Users/felix/Scripts/predict_gender.py
+Processing 1/167: name
+Debug - Raw response for 'name': '<think>'
+Debug - Cannot determine gender for 'name'
+Name: name -> First name: name, Gender: na
+
+Processing 2/167: Maria
+Debug - Raw response for 'Maria': '<think>'
+Debug - Exact female name match for 'Maria'
+Name: Maria Holei -> First name: Maria, Gender: f
+
+Processing 3/167: Petr
+Debug - Raw response for 'Petr': '<think>'
+Debug - Exact male name match for 'Petr'
+Name: Petr Borecký Photography -> First name: Petr, Gender: m
+
+Processing 4/167: ADELIA
+Debug - Raw response for 'ADELIA': '<think>'
+Debug - Exact female name match for 'ADELIA'
+Name: 🎀ADELIA🎀 -> First name: ADELIA, Gender: f
+
+Processing 5/167: Juan
+Debug - Raw response for 'Juan': '<think>'
+Debug - Exact male name match for 'Juan'
+Name: Juan Daniel Rincon -> First name: Juan, Gender: m
+
+Processing 6/167: Urmila
+Debug - Raw response for 'Urmila': '<think>'
+Debug - Exact female name match for 'Urmila'
+Name: Urmila Tallam Sunil -> First name: Urmila, Gender: f
+
+Processing 7/167: Karel
+Debug - Raw response for 'Karel': '<think>'
+Debug - Exact male name match for 'Karel'
+Name: Karel -> First name: Karel, Gender: m
+
+Processing 8/167: Karolina
+Debug - Raw response for 'Karolina': '<think>'
+Debug - Female ending 'a' for 'Karolina'
+Name: Karolina -> First name: Karolina, Gender: f
+
+Processing 9/167: 0
+Debug - Raw response for '0': '<think>'
+Debug - Cannot determine gender for '0'
+Name: 0 -> First name: 0, Gender: na
+
+Processing 10/167: Alinka
+Debug - Raw response for 'Alinka': '<think>'
+Debug - Female ending 'a' for 'Alinka'
+Name: Alinka Polovko -> First name: Alinka, Gender: f
+
+Processing 11/167: Veronika
+Debug - Raw response for 'Veronika': '<think>'
+Debug - Female ending 'a' for 'Veronika'
+Name: Veronika Chládková -> First name: Veronika, Gender: f
+
+Processing 12/167: Jimena
+Debug - Raw response for 'Jimena': '<think>'
+Debug - Female ending 'a' for 'Jimena'
+Name: Jimena Moraguez -> First name: Jimena, Gender: f
+
+Processing 13/167: Helena
+Debug - Raw response for 'Helena': '<think>'
+Debug - Female ending 'a' for 'Helena'
+Name: Helena Sochman -> First name: Helena, Gender: f
+
+Processing 14/167: Petra
+Debug - Raw response for 'Petra': '<think>'
+Debug - Female ending 'a' for 'Petra'
+Name: Petra Marešová 🌿 henna umělkyně Liberec 🇨🇿 -> First name: Petra, Gender: f
+
+Processing 15/167: Mahmoud
+Debug - Raw response for 'Mahmoud': '<think>'
+Debug - Exact male name match for 'Mahmoud'
+Name: Mahmoud Essam Eldin -> First name: Mahmoud, Gender: m
+
+Processing 16/167: Roman
+Debug - Raw response for 'Roman': '<think>'
+Debug - Exact male name match for 'Roman'
+Name: Roman Faifura -> First name: Roman, Gender: m
+
+Processing 17/167: adélka
+Debug - Raw response for 'adélka': '<think>'
+Debug - Female ending 'a' for 'adélka'
+Name: adélka -> First name: adélka, Gender: f
+
+Processing 18/167: Nikola
+Debug - Raw response for 'Nikola': '<think>'
+Debug - Female ending 'a' for 'Nikola'
+Name: Nikola Patočková -> First name: Nikola, Gender: f
+
+Processing 19/167: Юлия
+Debug - Raw response for 'Юлия': '<think>'
+Debug - Exact female name match for 'Юлия'
+Name: Юлия Ильницкая -> First name: Юлия, Gender: f
+
+Processing 20/167: justhell
+Debug - Raw response for 'justhell': '<think>'
+Debug - Cannot determine gender for 'justhell'
+Name: 🚺justhell🥊 -> First name: justhell, Gender: na
+
+Processing 21/167: Nina
+Debug - Raw response for 'Nina': '<think>'
+Debug - Exact female name match for 'Nina'
+Name: Nina Čunderlíková -> First name: Nina, Gender: f
+
+Processing 22/167: alice_opatrilova
+Debug - Raw response for 'alice_opatrilova': '<think>'
+Debug - Female ending 'a' for 'alice_opatrilova'
+Name: alice_opatrilova -> First name: alice_opatrilova, Gender: f
+
+Processing 23/167: mulytska_sofia
+Debug - Raw response for 'mulytska_sofia': '<think>'
+Debug - Female ending 'a' for 'mulytska_sofia'
+Name: mulytska_sofia -> First name: mulytska_sofia, Gender: f
+
+Processing 24/167: 𝐌𝐢𝐥𝐢
+Debug - Raw response for '𝐌𝐢𝐥𝐢': '<think>'
+Debug - Cannot determine gender for '𝐌𝐢𝐥𝐢'
+Name: 𝐌𝐢𝐥𝐢, 𝐇𝐮𝐠𝐢 & 𝐂𝐨𝐬𝐦𝐢 -> First name: 𝐌𝐢𝐥𝐢, Gender: na
+
+Processing 25/167: Klára
+Debug - Raw response for 'Klára': '<think>'
+Debug - Female ending 'a' for 'Klára'
+Name: Klára Boučková -> First name: Klára, Gender: f
+
+Processing 26/167: Eve
+Debug - Raw response for 'Eve': '<think>'
+Debug - Exact female name match for 'Eve'
+Name: Eve Hood -> First name: Eve, Gender: f
+
+Processing 27/167: Martin
+Debug - Raw response for 'Martin': '<think>'
+Debug - Exact male name match for 'Martin'
+Name: Martin Knoz -> First name: Martin, Gender: m
+
+Processing 28/167: Vasylisa
+Debug - Raw response for 'Vasylisa': '<think>'
+Debug - Female ending 'a' for 'Vasylisa'
+Name: Vasylisa Prekrasnaya -> First name: Vasylisa, Gender: f
+
+Processing 29/167: Pavel
+Debug - Raw response for 'Pavel': '<think>'
+Debug - Exact male name match for 'Pavel'
+Name: Pavel Ryska -> First name: Pavel, Gender: m
+
+Processing 30/167: CLV
+Debug - Raw response for 'CLV': '<think>'
+Debug - Cannot determine gender for 'CLV'
+Name: CLV -> First name: CLV, Gender: na
+
+Processing 31/167: LuckaNovakova
+Debug - Raw response for 'LuckaNovakova': '<think>'
+Debug - Female ending 'a' for 'LuckaNovakova'
+Name: LuckaNovakova -> First name: LuckaNovakova, Gender: f
+
+Processing 32/167: Olena
+Debug - Raw response for 'Olena': '<think>'
+Debug - Exact female name match for 'Olena'
+Name: Olena Tokar -> First name: Olena, Gender: f
+
+Processing 33/167: Dominik
+Debug - Raw response for 'Dominik': '<think>'
+Debug - Exact male name match for 'Dominik'
+Name: Dominik Skaloš -> First name: Dominik, Gender: m
+
+Processing 34/167: Adam
+Debug - Raw response for 'Adam': '<think>'
+Debug - Exact male name match for 'Adam'
+Name: Adam Mrázek -> First name: Adam, Gender: m
+
+Processing 35/167: Miroslav
+Debug - Raw response for 'Miroslav': '<think>'
+Debug - Exact male name match for 'Miroslav'
+Name: Miroslav Říha -> First name: Miroslav, Gender: m
+
+Processing 36/167: Barbs
+Debug - Raw response for 'Barbs': '<think>'
+Debug - Exact female name match for 'Barbs'
+Name: Barbs Nabih -> First name: Barbs, Gender: f
+
+Processing 37/167: Zuzička
+Debug - Raw response for 'Zuzička': '<think>'
+Debug - Female ending 'a' for 'Zuzička'
+Name: Zuzička Žužu 👩🏼 🇸🇰 ✈️☀️🏊🏼‍♀️🍹🐠 -> First name: Zuzička, Gender: f
+
+Processing 38/167: Arcadia
+Debug - Raw response for 'Arcadia': '<think>'
+Debug - Female ending 'a' for 'Arcadia'
+Name: Arcadia - Gsine -> First name: Arcadia, Gender: f
+
+Processing 39/167: Deborah
+Debug - Raw response for 'Deborah': '<think>'
+Debug - Exact female name match for 'Deborah'
+Name: Deborah Portello -> First name: Deborah, Gender: f
+
+Processing 40/167: AMS
+Debug - Raw response for 'AMS': '<think>'
+Debug - Cannot determine gender for 'AMS'
+Name: AMS Booking -> First name: AMS, Gender: na
+
+Processing 41/167: LIZ
+Debug - Raw response for 'LIZ': '<think>'
+Debug - Cannot determine gender for 'LIZ'
+Name: LIZ -> First name: LIZ, Gender: na
+
+Processing 42/167: Teruska
+Debug - Raw response for 'Teruska': '<think>'
+Debug - Female ending 'a' for 'Teruska'
+Name: Teruška Čejchanová -> First name: Teruska, Gender: f
+
+Processing 43/167: Dominik
+Debug - Raw response for 'Dominik': '<think>'
+Debug - Exact male name match for 'Dominik'
+Name: Dominik Grey | 🅰🆁🆃🅸🆂🆃 ​ & ​ 🅼🆄🆂🅸🅲 -> First name: Dominik, Gender: m
+
+Processing 44/167: HMJ_1710
+Debug - Raw response for 'HMJ_1710': '<think>'
+Debug - Cannot determine gender for 'HMJ_1710'
+Name: HMJ_1710 -> First name: HMJ_1710, Gender: na
+
+Processing 45/167: Celine
+Debug - Raw response for 'Celine': '<think>'
+Debug - Exact female name match for 'Celine'
+Name: Celine Rosalie🌹Wellness · Nutrition · Thyroid Healing -> First name: Celine, Gender: f
+
+Processing 46/167: Lukáš
+Debug - Raw response for 'Lukáš': '<think>'
+Debug - Exact male name match for 'Lukáš'
+Name: Lukáš Plic -> First name: Lukáš, Gender: m
+
+Processing 47/167: Martina
+Debug - Raw response for 'Martina': '<think>'
+Debug - Female ending 'a' for 'Martina'
+Name: Martina -> First name: Martina, Gender: f
+
+Processing 48/167: Olga
+Debug - Raw response for 'Olga': '<think>'
+Debug - Female ending 'a' for 'Olga'
+Name: Olga Stankova Fotograf -> First name: Olga, Gender: f
+
+Processing 49/167: Američan
+Debug - Raw response for 'Američan': '<think>'
+Debug - Cannot determine gender for 'Američan'
+Name: Američan -> First name: Američan, Gender: na
+
+Processing 50/167: AfroRave
+Debug - Raw response for 'AfroRave': '<think>'
+Debug - Cannot determine gender for 'AfroRave'
+Name: AfroRave Prague -> First name: AfroRave, Gender: na
+
+Processing 51/167: KRISTÝNA
+Debug - Raw response for 'KRISTÝNA': '<think>'
+Debug - Female ending 'a' for 'KRISTÝNA'
+Name: KRISTÝNA -> First name: KRISTÝNA, Gender: f
+
+Processing 52/167: Lu
+Debug - Raw response for 'Lu': '<think>'
+Debug - Cannot determine gender for 'Lu'
+Name: Lu Ky -> First name: Lu, Gender: na
+
+Processing 53/167: Zuzana
+Debug - Raw response for 'Zuzana': '<think>'
+Debug - Female ending 'a' for 'Zuzana'
+Name: Zuzana Olšanská -> First name: Zuzana, Gender: f
+
+Processing 54/167: moosapo_
+Debug - Raw response for 'moosapo_': '<think>'
+Debug - Cannot determine gender for 'moosapo_'
+Name: moosapo_ -> First name: moosapo_, Gender: na
+
+Processing 55/167: ТВОЙ
+Debug - Raw response for 'ТВОЙ': '<think>'
+Debug - Cannot determine gender for 'ТВОЙ'
+Name: ТВОЙ ПСИХОЛОГ | ОНЛАЙН | ЕКАТЕРИНА СЕМЕНОВА -> First name: ТВОЙ, Gender: na
+
+Processing 56/167: 0
+Debug - Raw response for '0': '<think>'
+Debug - Cannot determine gender for '0'
+Name: 0 -> First name: 0, Gender: na
+
+Processing 57/167: Eliska
+Debug - Raw response for 'Eliska': '<think>'
+Debug - Female ending 'a' for 'Eliska'
+Name: Eliska Novakova -> First name: Eliska, Gender: f
+
+Processing 58/167: Giovanni
+Debug - Raw response for 'Giovanni': '<think>'
+Debug - Cannot determine gender for 'Giovanni'
+Name: Giovanni S -> First name: Giovanni, Gender: na
+
+Processing 59/167: Sebo
+Debug - Raw response for 'Sebo': '<think>'
+Debug - Male ending pattern for 'Sebo'
+Name: Sebo Beats Zendel -> First name: Sebo, Gender: m
+
+Processing 60/167: Árpád
+Debug - Raw response for 'Árpád': '<think>'
+Debug - Cannot determine gender for 'Árpád'
+Name: Árpád Erdős -> First name: Árpád, Gender: na
+
+Processing 61/167: Emily
+Debug - Raw response for 'Emily': '<think>'
+Debug - Exact female name match for 'Emily'
+Name: Emily Ruc -> First name: Emily, Gender: f
+
+Processing 62/167: Jesus
+Debug - Raw response for 'Jesus': '<think>'
+Debug - Male ending pattern for 'Jesus'
+Name: Jesus Emanuel Osegueda -> First name: Jesus, Gender: m
+
+Processing 63/167: Anna
+Debug - Raw response for 'Anna': '<think>'
+Debug - Female ending 'a' for 'Anna'
+Name: Anna Šulcová -> First name: Anna, Gender: f
+
+Processing 64/167: Нонна
+Debug - Raw response for 'Нонна': '<think>'
+Debug - Cannot determine gender for 'Нонна'
+Name: Нонна Андреевна -> First name: Нонна, Gender: na
+
+Processing 65/167: Emma
+Debug - Raw response for 'Emma': '<think>'
+Debug - Female ending 'a' for 'Emma'
+Name: Emma Hörnell - Hula hoops -> First name: Emma, Gender: f
+
+Processing 66/167: LL
+Debug - Raw response for 'LL': '<think>'
+Debug - Cannot determine gender for 'LL'
+Name: LL🌙 -> First name: LL, Gender: na
+
+Processing 67/167: Mells
+Debug - Raw response for 'Mells': '<think>'
+Debug - Cannot determine gender for 'Mells'
+Name: Mell’s Blanco -> First name: Mells, Gender: na
+
+Processing 68/167: Giulia
+Debug - Raw response for 'Giulia': '<think>'
+Debug - Female ending 'a' for 'Giulia'
+Name: Giulia Newbery -> First name: Giulia, Gender: f
+
+Processing 69/167: Sandra
+Debug - Raw response for 'Sandra': '<think>'
+Debug - Exact female name match for 'Sandra'
+Name: Sandra Morais Mota -> First name: Sandra, Gender: f
+
+Processing 70/167: Jarmila
+Debug - Raw response for 'Jarmila': '<think>'
+Debug - Female ending 'a' for 'Jarmila'
+Name: Jarmila Weymannová -> First name: Jarmila, Gender: f
+
+Processing 71/167: Susane
+Debug - Raw response for 'Susane': '<think>'
+Debug - Cannot determine gender for 'Susane'
+Name: Susane -> First name: Susane, Gender: na
+
+Processing 72/167: 0
+Debug - Raw response for '0': '<think>'
+Debug - Cannot determine gender for '0'
+Name: 0 -> First name: 0, Gender: na
+
+Processing 73/167: Turan
+Debug - Raw response for 'Turan': '<think>'
+Debug - Cannot determine gender for 'Turan'
+Name: Turan Uygun -> First name: Turan, Gender: na
+
+Processing 74/167: ᭙
+Debug - Raw response for '᭙': '<think>'
+Debug - Cannot determine gender for '᭙'
+Name: ❀ ༝ ᭙ 𝒾 ᭙ 𝒾 𝓃 𝓀 𝒶 ༝ ❀ -> First name: ᭙, Gender: na
+
+Processing 75/167: Валерия
+Debug - Raw response for 'Валерия': '<think>'
+Debug - Cannot determine gender for 'Валерия'
+Name: Валерия Гузенко -> First name: Валерия, Gender: na
+
+Processing 76/167: Jakub
+Debug - Raw response for 'Jakub': '<think>'
+Debug - Exact male name match for 'Jakub'
+Name: Jakub Kroc -> First name: Jakub, Gender: m
+
+Processing 77/167: Regina
+Debug - Raw response for 'Regina': '<think>'
+Debug - Female ending 'a' for 'Regina'
+Name: Regina Rieznerová -> First name: Regina, Gender: f
+
+Processing 78/167: BEBO
+Debug - Raw response for 'BEBO': '<think>'
+Debug - Male ending pattern for 'BEBO'
+Name: BEBO (EG) -> First name: BEBO, Gender: m
+
+Processing 79/167: Martin
+Debug - Raw response for 'Martin': '<think>'
+Debug - Exact male name match for 'Martin'
+Name: Martin Matty Pitaš -> First name: Martin, Gender: m
+
+Processing 80/167: Monika
+Debug - Raw response for 'Monika': '<think>'
+Debug - Female ending 'a' for 'Monika'
+Name: Monika Novotná -> First name: Monika, Gender: f
+
+Processing 81/167: A
+Debug - Raw response for 'A': '<think>'
+Debug - Cannot determine gender for 'A'
+Name: A n e t -> First name: A, Gender: na
+
+Processing 82/167: Stephanie
+Debug - Raw response for 'Stephanie': '<think>'
+Debug - Cannot determine gender for 'Stephanie'
+Name: Stephanie -> First name: Stephanie, Gender: na
+
+Processing 83/167: Marek
+Debug - Raw response for 'Marek': '<think>'
+Debug - Cannot determine gender for 'Marek'
+Name: Marek Hošek -> First name: Marek, Gender: na
+
+Processing 84/167: MarceeAcevedo
+Debug - Raw response for 'MarceeAcevedo': '<think>'
+Debug - Male ending pattern for 'MarceeAcevedo'
+Name: Marcee.Acevedo -> First name: MarceeAcevedo, Gender: m
+
+Processing 85/167: Kristýna
+Debug - Raw response for 'Kristýna': '<think>'
+Debug - Female ending 'a' for 'Kristýna'
+Name: Kristýna Volfová -> First name: Kristýna, Gender: f
+
+Processing 86/167: AnneMette
+Debug - Raw response for 'AnneMette': '<think>'
+Debug - Cannot determine gender for 'AnneMette'
+Name: Anne-Mette Christensen -> First name: AnneMette, Gender: na
+
+Processing 87/167: Jakub
+Debug - Raw response for 'Jakub': '<think>'
+Debug - Exact male name match for 'Jakub'
+Name: Jakub Šimek -> First name: Jakub, Gender: m
+
+Processing 88/167: Jonathan
+Debug - Raw response for 'Jonathan': '<think>'
+Debug - Cannot determine gender for 'Jonathan'
+Name: Jonathan Joannes -> First name: Jonathan, Gender: na
+
+Processing 89/167: Yael_Senem
+Debug - Raw response for 'Yael_Senem': '<think>'
+Debug - Cannot determine gender for 'Yael_Senem'
+Name: Yael_Senem Beraha -> First name: Yael_Senem, Gender: na
+
+Processing 90/167: 0
+Debug - Raw response for '0': '<think>'
+Debug - Cannot determine gender for '0'
+Name: 0 -> First name: 0, Gender: na
+
+Processing 91/167: Štěpán
+Debug - Raw response for 'Štěpán': '<think>'
+Debug - Cannot determine gender for 'Štěpán'
+Name: Štěpán Tokátko Ježek -> First name: Štěpán, Gender: na
+
+Processing 92/167: Riya
+Debug - Raw response for 'Riya': '<think>'
+Debug - Female ending 'a' for 'Riya'
+Name: Riya Kakkar -> First name: Riya, Gender: f
+
+Processing 93/167: Jiri
+Debug - Raw response for 'Jiri': '<think>'
+Debug - Cannot determine gender for 'Jiri'
+Name: Jiri Kviz -> First name: Jiri, Gender: na
+
+Processing 94/167: Jakub
+Debug - Raw response for 'Jakub': '<think>'
+Debug - Exact male name match for 'Jakub'
+Name: Jakub Solař -> First name: Jakub, Gender: m
+
+Processing 95/167: Karolína
+Debug - Raw response for 'Karolína': '<think>'
+Debug - Female ending 'a' for 'Karolína'
+Name: Karolína Marková -> First name: Karolína, Gender: f
+
+Processing 96/167: EGRESS
+Debug - Raw response for 'EGRESS': '<think>'
+Debug - Cannot determine gender for 'EGRESS'
+Name: EGRESS -> First name: EGRESS, Gender: na
+
+Processing 97/167: Barbora
+Debug - Raw response for 'Barbora': '<think>'
+Debug - Female ending 'a' for 'Barbora'
+Name: Barbora Benešová -> First name: Barbora, Gender: f
+
+Processing 98/167: Nataliia
+Debug - Raw response for 'Nataliia': '<think>'
+Debug - Female ending 'a' for 'Nataliia'
+Name: Nataliia -> First name: Nataliia, Gender: f
+
+Processing 99/167: Mary
+Debug - Raw response for 'Mary': '<think>'
+Debug - Cannot determine gender for 'Mary'
+Name: Mary -> First name: Mary, Gender: na
+
+Processing 100/167: Samuel
+Debug - Raw response for 'Samuel': '<think>'
+Debug - Cannot determine gender for 'Samuel'
+Name: Samuel -> First name: Samuel, Gender: na
+
+Processing 101/167: Маргарита
+Debug - Raw response for 'Маргарита': '<think>'
+Debug - Cannot determine gender for 'Маргарита'
+Name: Маргарита Зуева -> First name: Маргарита, Gender: na
+
+Processing 102/167: Rashmiya
+Debug - Raw response for 'Rashmiya': '<think>'
+Debug - Female ending 'a' for 'Rashmiya'
+Name: Rashmiya Basheer ♡ -> First name: Rashmiya, Gender: f
+
+Processing 103/167: Marcela
+Debug - Raw response for 'Marcela': '<think>'
+Debug - Female ending 'a' for 'Marcela'
+Name: Marcela Srogoň -> First name: Marcela, Gender: f
+
+Processing 104/167: Marco
+Debug - Raw response for 'Marco': '<think>'
+Debug - Male ending pattern for 'Marco'
+Name: Marco Morana -> First name: Marco, Gender: m
+
+Processing 105/167: ⚜️
+Debug - Raw response for '⚜️': '<think>'
+Debug - Cannot determine gender for '⚜️'
+Name: ⚜️ -> First name: ⚜️, Gender: na
+
+Processing 106/167: Zeid
+Debug - Raw response for 'Zeid': '<think>'
+Debug - Cannot determine gender for 'Zeid'
+Name: Zeid Alhousaini -> First name: Zeid, Gender: na
+
+Processing 107/167: Saurav
+Debug - Raw response for 'Saurav': '<think>'
+Debug - Cannot determine gender for 'Saurav'
+Name: Saurav saluja -> First name: Saurav, Gender: na
+
+Processing 108/167: ABUISNAYNAH
+Debug - Raw response for 'ABUISNAYNAH': '<think>'
+Debug - Cannot determine gender for 'ABUISNAYNAH'
+Name: ABUISNAYNAH Nadir -> First name: ABUISNAYNAH, Gender: na
+
+Processing 109/167: Dr_interistaa
+Debug - Raw response for 'Dr_interistaa': '<think>'
+Debug - Female ending 'a' for 'Dr_interistaa'
+Name: Dr_interistaa -> First name: Dr_interistaa, Gender: f
+
+Processing 110/167: Jaroslav
+Debug - Raw response for 'Jaroslav': '<think>'
+Debug - Cannot determine gender for 'Jaroslav'
+Name: Jaroslav Večeřa -> First name: Jaroslav, Gender: na
+
+Processing 111/167: Emma
+Debug - Raw response for 'Emma': '<think>'
+Debug - Female ending 'a' for 'Emma'
+Name: Emma Kopčová -> First name: Emma, Gender: f
+
+Processing 112/167: Michaela
+Debug - Raw response for 'Michaela': '<think>'
+Debug - Female ending 'a' for 'Michaela'
+Name: Michaela -> First name: Michaela, Gender: f
+
+Processing 113/167: Moira
+Debug - Raw response for 'Moira': '<think>'
+Debug - Female ending 'a' for 'Moira'
+Name: Moira D’Onofrio 🎈29 𝙋𝙤𝙡𝙚 𝙙𝙖𝙣𝙘𝙚𝙧 -> First name: Moira, Gender: f
+
+Processing 114/167: Areeg
+Debug - Raw response for 'Areeg': '<think>'
+Debug - Cannot determine gender for 'Areeg'
+Name: Areeg 🎀 -> First name: Areeg, Gender: na
+
+Processing 115/167: Martin
+Debug - Raw response for 'Martin': '<think>'
+Debug - Exact male name match for 'Martin'
+Name: Martin Oplíštil -> First name: Martin, Gender: m
+
+Processing 116/167: Natali
+Debug - Raw response for 'Natali': '<think>'
+Debug - Cannot determine gender for 'Natali'
+Name: Natali Hypius -> First name: Natali, Gender: na
+
+Processing 117/167: Dani
+Debug - Raw response for 'Dani': '<think>'
+Debug - Cannot determine gender for 'Dani'
+Name: Dani Campos -> First name: Dani, Gender: na
+
+Processing 118/167: Ksyu
+Debug - Raw response for 'Ksyu': '<think>'
+Debug - Cannot determine gender for 'Ksyu'
+Name: Ksyu Samokhvalova -> First name: Ksyu, Gender: na
+
+Processing 119/167: 0
+Debug - Raw response for '0': '<think>'
+Debug - Cannot determine gender for '0'
+Name: 0 -> First name: 0, Gender: na
+
+Processing 120/167: Ian
+Debug - Raw response for 'Ian': '<think>'
+Debug - Cannot determine gender for 'Ian'
+Name: Ian Lindsay-Watson -> First name: Ian, Gender: na
+
+Processing 121/167: Chippy
+Debug - Raw response for 'Chippy': '<think>'
+Debug - Cannot determine gender for 'Chippy'
+Name: Chippy Chip -> First name: Chippy, Gender: na
+
+Processing 122/167: Karolina
+Debug - Raw response for 'Karolina': '<think>'
+Debug - Female ending 'a' for 'Karolina'
+Name: Karolina Kopecká -> First name: Karolina, Gender: f
+
+Processing 123/167: Klára
+Debug - Raw response for 'Klára': '<think>'
+Debug - Female ending 'a' for 'Klára'
+Name: Klára Pavelková -> First name: Klára, Gender: f
+
+Processing 124/167: 𝑴𝒂𝒓𝒄𝒐
+Debug - Raw response for '𝑴𝒂𝒓𝒄𝒐': '<think>'
+Debug - Cannot determine gender for '𝑴𝒂𝒓𝒄𝒐'
+Name: 𝑴𝒂𝒓𝒄𝒐 𝑺𝒂𝒃𝒆𝒕𝒕𝒊 -> First name: 𝑴𝒂𝒓𝒄𝒐, Gender: na
+
+Processing 125/167: Lucie
+Debug - Raw response for 'Lucie': '<think>'
+Debug - Cannot determine gender for 'Lucie'
+Name: Lucie Hanzl -> First name: Lucie, Gender: na
+
+Processing 126/167: lea
+Debug - Raw response for 'lea': '<think>'
+Debug - Female ending 'a' for 'lea'
+Name: lea kolotinski -> First name: lea, Gender: f
+
+Processing 127/167: C
+Debug - Raw response for 'C': '<think>'
+Debug - Cannot determine gender for 'C'
+Name: C A B ✨ -> First name: C, Gender: na
+
+Processing 128/167: Sabina
+Debug - Raw response for 'Sabina': '<think>'
+Debug - Female ending 'a' for 'Sabina'
+Name: Sabina Štěpničková 🌸 -> First name: Sabina, Gender: f
+
+Processing 129/167: 0
+Debug - Raw response for '0': '<think>'
+Debug - Cannot determine gender for '0'
+Name: 0 -> First name: 0, Gender: na
+
+Processing 130/167: Barbora
+Debug - Raw response for 'Barbora': '<think>'
+Debug - Female ending 'a' for 'Barbora'
+Name: Barbora Zlamšidlová -> First name: Barbora, Gender: f
+
+Processing 131/167: Petra
+Debug - Raw response for 'Petra': '<think>'
+Debug - Female ending 'a' for 'Petra'
+Name: Petra Viltová -> First name: Petra, Gender: f
+
+Processing 132/167: Eliška
+Debug - Raw response for 'Eliška': '<think>'
+Debug - Female ending 'a' for 'Eliška'
+Name: Eliška Smazalová -> First name: Eliška, Gender: f
+
+Processing 133/167: Gourmet
+Debug - Raw response for 'Gourmet': '<think>'
+Debug - Cannot determine gender for 'Gourmet'
+Name: Gourmet Guy Cz -> First name: Gourmet, Gender: na
+
+Processing 134/167: 𝓝𝓲𝓴𝔂
+Debug - Raw response for '𝓝𝓲𝓴𝔂': '<think>'
+Debug - Cannot determine gender for '𝓝𝓲𝓴𝔂'
+Name: 𝓝𝓲𝓴𝔂 ♡ 𝓝𝓮𝓳𝓮𝓭𝓵𝓲𝓴𝓸𝓿𝓪 -> First name: 𝓝𝓲𝓴𝔂, Gender: na
+
+Processing 135/167: 🅻🆄🅺🅰🆂 🅷🅻🅰🆅🅸🅲🅺🅰
+Debug - Raw response for '🅻🆄🅺🅰🆂 🅷🅻🅰🆅🅸🅲🅺🅰': '<think>'
+Debug - Cannot determine gender for '🅻🆄🅺🅰🆂 🅷🅻🅰🆅🅸🅲🅺🅰'
+Name: 🅻🆄🅺🅰🆂 🅷🅻🅰🆅🅸🅲🅺🅰 -> First name: 🅻🆄🅺🅰🆂 🅷🅻🅰🆅🅸🅲🅺🅰, Gender: na
+
+Processing 136/167: THIERNO
+Debug - Raw response for 'THIERNO': '<think>'
+Debug - Male ending pattern for 'THIERNO'
+Name: THIERNO BARRY💵💰🔷💙 -> First name: THIERNO, Gender: m
+
+Processing 137/167: Zlata
+Debug - Raw response for 'Zlata': '<think>'
+Debug - Female ending 'a' for 'Zlata'
+Name: Zlata Kost -> First name: Zlata, Gender: f
+
+Processing 138/167: Dituš
+Debug - Raw response for 'Dituš': '<think>'
+Debug - Cannot determine gender for 'Dituš'
+Name: Dituš ✨ -> First name: Dituš, Gender: na
+
+Processing 139/167: Lucie
+Debug - Raw response for 'Lucie': '<think>'
+Debug - Cannot determine gender for 'Lucie'
+Name: Lucie Vítková -> First name: Lucie, Gender: na
+
+Processing 140/167: Mirka
+Debug - Raw response for 'Mirka': '<think>'
+Debug - Female ending 'a' for 'Mirka'
+Name: Mirka Tomašiková -> First name: Mirka, Gender: f
+
+Processing 141/167: Monika
+Debug - Raw response for 'Monika': '<think>'
+Debug - Female ending 'a' for 'Monika'
+Name: Monika Moravcová -> First name: Monika, Gender: f
+
+Processing 142/167: Ivana
+Debug - Raw response for 'Ivana': '<think>'
+Debug - Female ending 'a' for 'Ivana'
+Name: Ivana Gombikova -> First name: Ivana, Gender: f
+
+Processing 143/167: ДАЯНА
+Debug - Raw response for 'ДАЯНА': '<think>'
+Debug - Cannot determine gender for 'ДАЯНА'
+Name: ДАЯНА ДЕМЧЕНКО / 𝑭𝑼𝑳𝑳-𝑪𝒀𝑪𝑳𝑬 𝑴𝑨𝑹𝑲𝑬𝑻𝑰𝑵𝑮/МАРКЕТОЛОГ ЧЕХІЯ -> First name: ДАЯНА, Gender: na
+
+Processing 144/167: ЭТО
+Debug - Raw response for 'ЭТО': '<think>'
+Debug - Cannot determine gender for 'ЭТО'
+Name: ЭТО НЕ ТА ПЛАНЕТА -> First name: ЭТО, Gender: na
+
+Processing 145/167: Dmitry
+Debug - Raw response for 'Dmitry': '<think>'
+Debug - Cannot determine gender for 'Dmitry'
+Name: Dmitry Tarasov -> First name: Dmitry, Gender: na
+
+Processing 146/167: Lucijánek
+Debug - Raw response for 'Lucijánek': '<think>'
+Debug - Cannot determine gender for 'Lucijánek'
+Name: Lucijánek Koubková -> First name: Lucijánek, Gender: na
+
+Processing 147/167: Yuksel
+Debug - Raw response for 'Yuksel': '<think>'
+Debug - Cannot determine gender for 'Yuksel'
+Name: Yuksel Ön -> First name: Yuksel, Gender: na
+
+Processing 148/167: Paula
+Debug - Raw response for 'Paula': '<think>'
+Debug - Female ending 'a' for 'Paula'
+Name: Paula Luro -> First name: Paula, Gender: f
+
+Processing 149/167: Gabriela
+Debug - Raw response for 'Gabriela': '<think>'
+Debug - Female ending 'a' for 'Gabriela'
+Name: Gabriela Voldřichová -> First name: Gabriela, Gender: f
+
+Processing 150/167: 𝓐𝓷𝓭𝔂
+Debug - Raw response for '𝓐𝓷𝓭𝔂': '<think>'
+Debug - Cannot determine gender for '𝓐𝓷𝓭𝔂'
+Name: 𝓐𝓷𝓭𝔂 𝓡𝓸𝓪𝓭 -> First name: 𝓐𝓷𝓭𝔂, Gender: na
+
+Processing 151/167: 0
+Debug - Raw response for '0': '<think>'
+Debug - Cannot determine gender for '0'
+Name: 0 -> First name: 0, Gender: na
+
+Processing 152/167: Emma
+Debug - Raw response for 'Emma': '<think>'
+Debug - Female ending 'a' for 'Emma'
+Name: Emma Recová -> First name: Emma, Gender: f
+
+Processing 153/167: Alessia
+Debug - Raw response for 'Alessia': '<think>'
+Debug - Female ending 'a' for 'Alessia'
+Name: Alessia Fornara -> First name: Alessia, Gender: f
+
+Processing 154/167: Alice
+Debug - Raw response for 'Alice': '<think>'
+Debug - Cannot determine gender for 'Alice'
+Name: Alice Santana -> First name: Alice, Gender: na
+
+Processing 155/167: Zdenka
+Debug - Raw response for 'Zdenka': '<think>'
+Debug - Female ending 'a' for 'Zdenka'
+Name: Zdenka Herianová -> First name: Zdenka, Gender: f
+
+Processing 156/167: TEREZA
+Debug - Raw response for 'TEREZA': '<think>'
+Debug - Female ending 'a' for 'TEREZA'
+Name: TEREZA BENEDOVÁ -> First name: TEREZA, Gender: f
+
+Processing 157/167: 0
+Debug - Raw response for '0': '<think>'
+Debug - Cannot determine gender for '0'
+Name: 0 -> First name: 0, Gender: na
+
+Processing 158/167: Roberta
+Debug - Raw response for 'Roberta': '<think>'
+Debug - Female ending 'a' for 'Roberta'
+Name: Roberta Liguori -> First name: Roberta, Gender: f
+
+Processing 159/167: Tereza
+Debug - Raw response for 'Tereza': '<think>'
+Debug - Female ending 'a' for 'Tereza'
+Name: Tereza Baslová -> First name: Tereza, Gender: f
+
+Processing 160/167: Ales
+Debug - Raw response for 'Ales': '<think>'
+Debug - Male ending pattern for 'Ales'
+Name: Ales Uyka -> First name: Ales, Gender: m
+
+Processing 161/167: Rupin
+Debug - Raw response for 'Rupin': '<think>'
+Debug - Cannot determine gender for 'Rupin'
+Name: Rupin Music -> First name: Rupin, Gender: na
+
+Processing 162/167: Iggy
+Debug - Raw response for 'Iggy': '<think>'
+Debug - Cannot determine gender for 'Iggy'
+Name: Iggy Zara -> First name: Iggy, Gender: na
+
+Processing 163/167: Tony
+Debug - Raw response for 'Tony': '<think>'
+Debug - Cannot determine gender for 'Tony'
+Name: Tony Kubenik -> First name: Tony, Gender: na
+
+Processing 164/167: Aneta
+Debug - Raw response for 'Aneta': '<think>'
+Debug - Female ending 'a' for 'Aneta'
+Name: Aneta Řezníčková (Senatore) -> First name: Aneta, Gender: f
+
+Processing 165/167: Kristina
+Debug - Raw response for 'Kristina': '<think>'
+Debug - Female ending 'a' for 'Kristina'
+Name: Kristina Skoropada -> First name: Kristina, Gender: f
+
+Processing 166/167: TechnoPraha
+Debug - Raw response for 'TechnoPraha': '<think>'
+Debug - Female ending 'a' for 'TechnoPraha'
+Name: TechnoPraha🇨🇿 -> First name: TechnoPraha, Gender: f
+
+Processing 167/167: Paul
+Debug - Raw response for 'Paul': '<think>'
+Debug - Exact male name match for 'Paul'
+Name: Paul Wiegel -> First name: Paul, Gender: m
+
+Processing complete! Results saved to names_with_gender.txt
+Processed 167 lines
+PS C:\Users\felix\Scripts> 

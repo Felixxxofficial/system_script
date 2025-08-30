@@ -13,6 +13,9 @@ except ImportError:
     VideoFileClip = None
 
 def process_folders():
+    # Define root directory to search for videos
+    root_dir = r"C:\Users\felix\OFM\Reels\Images"
+    
     # Define folders to process for images
     image_folders = [
         r"C:\Users\felix\OFM\Reels\Images\Student\Images",
@@ -20,7 +23,11 @@ def process_folders():
         r"C:\Users\felix\OFM\Reels\Images\Nature\Images",
         r"C:\Users\felix\OFM\Reels\Images\Normal\Images",
         r"C:\Users\felix\OFM\Reels\Images\Construction\Images",  # New folder for images
-        r"C:\Users\felix\OFM\Reels\Images\Gamer\Images"  # New folder for Gamer images
+        r"C:\Users\felix\OFM\Reels\Images\Gamer\Images",  # New folder for Gamer images
+        r"C:\Users\felix\OFM\Reels\Images\Emily\Images",  # New folder for Emily's images
+        r"C:\Users\felix\OFM\Reels\Images\Emily\Other",  # New folder for Emily\Other
+        r"C:\Users\felix\OFM\Reels\Images\Jessy\Images",  # New folder for Jessy's images
+        r"C:\Users\felix\OFM\Reels\Images\Jessy\Austin"  # New folder for Jessy\Austin
     ]
     
     # Define folders to process for videos
@@ -30,7 +37,11 @@ def process_folders():
         r"C:\Users\felix\OFM\Reels\Images\Nature\Video",
         r"C:\Users\felix\OFM\Reels\Images\Normal\Video",
         r"C:\Users\felix\OFM\Reels\Images\Construction\Video",  # New folder for videos
-        r"C:\Users\felix\OFM\Reels\Images\Gamer\Video"  # New folder for Gamer videos
+        r"C:\Users\felix\OFM\Reels\Images\Gamer\Video",  # New folder for Gamer videos
+        r"C:\Users\felix\OFM\Reels\Images\Emily\Video",  # New folder for Emily's videos
+        r"C:\Users\felix\OFM\Reels\Images\Emily\Other",  # New folder for Emily\Other
+        r"C:\Users\felix\OFM\Reels\Images\Jessy\Video",  # New folder for Jessy's videos
+        r"C:\Users\felix\OFM\Reels\Images\Jessy\Austin"  # New folder for Jessy\Austin
     ]
     
     # Process each image folder
@@ -56,6 +67,20 @@ def process_folders():
         print(f"Processing folder: {folder}")
         process_video_folder(folder)
         print(f"Completed processing: {folder}\n")
+    
+    # Search for videos named after the folder in the root directory
+    print("\n=== Searching for Videos in Root Directory ===")
+    for folder in video_folders:
+        # Extract the folder name (e.g., "Student" from "C:\Users\felix\OFM\Reels\Images\Student\Video")
+        folder_name = os.path.basename(os.path.dirname(folder))
+        video_name = f"{folder_name.lower()}.mp4"
+        video_path = os.path.join(root_dir, video_name)
+        
+        if os.path.exists(video_path):
+            print(f"Found video: {video_path}")
+            process_video(video_path, folder, get_existing_img_numbers(folder))
+        else:
+            print(f"No video found for folder {folder_name} in {root_dir}")
 
 def get_existing_img_numbers(folder_path):
     """Get list of existing IMG_XXXX numbers in the folder"""
