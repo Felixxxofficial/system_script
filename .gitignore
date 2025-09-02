@@ -24,3 +24,9 @@
 # Specific folder
 C:/Users/felix/Scripts/Obsidian/AI/note-companion-master/
 /Obsidian/AI/note-companion-master/
+
+# Credential files - DO NOT COMMIT
+token.json
+felix_gdrive.json
+credentials.json
+token.pickle

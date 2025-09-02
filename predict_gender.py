@@ -2,10 +2,56 @@ import requests
 import json
 import re
 import time
+import sys
+
+def test_lm_studio_connection():
+    """
+    Test connection to LM Studio API before processing
+    """
+    print("Testing LM Studio connection...")
+    
+    try:
+        response = requests.post(
+            "http://127.0.0.1:4999/v1/chat/completions",
+            headers={"Content-Type": "application/json"},
+            json={
+                "model": "llama4-dolphin-8b",
+                "messages": [
+                    {"role": "system", "content": "You are a test assistant."},
+                    {"role": "user", "content": "Say 'test'"}
+                ],
+                "temperature": 0.0,
+                "max_tokens": 5
+            },
+            timeout=10
+        )
+        
+        if response.status_code == 200:
+            result = response.json()
+            if "choices" in result and len(result["choices"]) > 0:
+                print("✅ LM Studio connection successful!")
+                print(f"Model response: {result['choices'][0]['message']['content'].strip()}")
+                return True
+            else:
+                print("❌ LM Studio responded but with unexpected format")
+                return False
+        else:
+            print(f"❌ LM Studio connection failed with status code: {response.status_code}")
+            return False
+            
+    except requests.exceptions.ConnectionError:
+        print("❌ Cannot connect to LM Studio. Make sure it's running on http://127.0.0.1:4999")
+        return False
+    except requests.exceptions.Timeout:
+        print("❌ LM Studio connection timed out")
+        return False
+    except Exception as e:
+        print(f"❌ LM Studio connection test failed: {e}")
+        return False
 
 def predict_gender(name):
     """
-    Predict gender using LM Studio API with improved parsing and fallback logic
+    Predict gender using LM Studio API only (no fallback)
     """
     # Clean the name - remove emojis and extra characters
     clean_name = re.sub(r'[^\w\s]', '', name).strip()
@@ -19,7 +65,7 @@ def predict_gender(name):
                 "http://127.0.0.1:4999/v1/chat/completions",
                 headers={"Content-Type": "application/json"},
                 json={
-                    "model": "llama4-dolphin-8b",  # Changed from qwen3-8b
+                    "model": "llama4-dolphin-8b",
                     "messages": [
                         {"role": "system", "content": "You are a gender classification assistant. Respond with only 'male' or 'female' for the given name."},
                         {"role": "user", "content": f"What is the gender of the name '{first_name}'?"}
@@ -37,11 +83,11 @@ def predict_gender(name):
                 
                 print(f"Debug - Raw response for '{first_name}': '{content}'")
                 
-                # Handle <think> tags like in ai_reply_helper.py
+                # Handle <think> tags
                 if "<think>" in content and "</think>" in content:
                     last_think_end = content.rfind("</think>")
                     if last_think_end != -1:
-                        content = content[last_think_end + 8:].strip()  # +8 for "</think>"
+                        content = content[last_think_end + 8:].strip()
                 
                 # Clean up the response
                 content = content.lower().strip()
@@ -51,6 +97,9 @@ def predict_gender(name):
                     return 'm'
                 elif 'female' in content:
                     return 'f'
+                else:
+                    print(f"Warning - Unclear response for '{first_name}': '{content}'")
+                    return 'na'
                     
             break  # Exit retry loop if we got a response
             
@@ -58,104 +107,10 @@ def predict_gender(name):
             print(f"API error for '{first_name}' (attempt {attempt+1}): {e}")
             if attempt < max_retries - 1:
                 time.sleep(2 ** attempt)  # Exponential backoff
-            continue
+            else:
+                print(f"Failed to get response for '{first_name}' after {max_retries} attempts")
+                return 'na'
     
-    # Very simple and direct prompt
-    prompt = f"Gender of name {first_name}: male or female?"
-    
-    try:
-        response = requests.post(
-            "http://127.0.0.1:4999/v1/chat/completions",
-            headers={"Content-Type": "application/json"},
-            json={
-                "model": "qwen3-8b",
-                "messages": [{"role": "user", "content": prompt}],
-                "temperature": 0.0,  # Most deterministic
-                "max_tokens": 5,     # Very short response
-                "stop": ["\n", ".", "!", "?"]  # Stop at punctuation
-            },
-            timeout=10  # Shorter timeout
-        )
-        
-        if response.status_code == 200:
-            result = response.json()
-            content = result['choices'][0]['message']['content'].strip().lower()
-            
-            print(f"Debug - Raw response for '{first_name}': '{content}'")
-            
-            # Simple keyword matching
-            if 'male' in content and 'female' not in content:
-                return 'm'
-            elif 'female' in content:
-                return 'f'
-            
-    except Exception as e:
-        print(f"API error for '{first_name}': {e}")
-    
-    # Enhanced fallback logic with better name patterns
-    first_name_lower = first_name.lower()
-    
-    # Common male name patterns and endings
-    male_patterns = {
-        # Common male names
-        'alexander', 'andrew', 'anthony', 'benjamin', 'charles', 'christopher', 'daniel', 'david',
-        'edward', 'frank', 'george', 'henry', 'james', 'john', 'joseph', 'kenneth', 'mark',
-        'matthew', 'michael', 'paul', 'peter', 'richard', 'robert', 'thomas', 'william',
-        'juan', 'carlos', 'luis', 'miguel', 'antonio', 'francisco', 'jose', 'manuel',
-        'petr', 'pavel', 'jan', 'tomas', 'martin', 'karel', 'jakub', 'lukas',
-        # Previously added names:
-        'roman', 'adam', 'dominik', 'mahmoud', 'miroslav', 'lukáš',
-        # User corrections from na_names.txt:
-        'dmitry', 'giovanni', 'ian', 'jaroslav', 'jiri', 'jonathan', 'marek', 'samuel', 'tony',
-        'árpád', 'štěpán', 'marco',  # Normalized special characters
-        # Male endings (but be careful with exceptions)
-        'o', 'os', 'us', 'is', 'es'
-    }
-    
-    # Female name patterns and endings
-    female_patterns = {
-        # Common female names
-        'maria', 'ana', 'carmen', 'laura', 'patricia', 'jennifer', 'linda', 'elizabeth',
-        'barbara', 'susan', 'jessica', 'sarah', 'karen', 'nancy', 'lisa', 'betty',
-        'helen', 'sandra', 'donna', 'carol', 'ruth', 'sharon', 'michelle', 'emily',
-        'adelia', 'urmila', 'priya', 'kavya', 'anita', 'sunita', 'geeta', 'rita',
-        # Previously added names:
-        'eve', 'nina', 'olena', 'юлия', 'deborah', 'celine', 'barbs',
-        # User corrections from na_names.txt:
-        'alice', 'annemette', 'dituš', 'lucie', 'mary', 'natali', 'stephanie', 'susane',
-        # Russian/Cyrillic female names:
-        'валерия', 'даяна', 'маргарита', 'нонна',
-        # Female endings
-        'ova', 'eva', 'ina', 'ika', 'anka'
-    }
-    
-    # Check exact name matches first
-    if first_name_lower in male_patterns:
-        print(f"Debug - Exact male name match for '{first_name}'")
-        return 'm'
-    
-    if first_name_lower in female_patterns:
-        print(f"Debug - Exact female name match for '{first_name}'")
-        return 'f'
-    
-    # Check endings (with exceptions)
-    if len(first_name_lower) > 2:
-        # Female endings (but exclude known male names)
-        if (first_name_lower.endswith('a') and 
-            first_name_lower not in {'joshua', 'luca', 'andrea'}):
-            print(f"Debug - Female ending 'a' for '{first_name}'")
-            return 'f'
-        
-        if first_name_lower.endswith(('ia', 'ina', 'ika', 'ova')):
-            print(f"Debug - Female ending pattern for '{first_name}'")
-            return 'f'
-        
-        # Male endings
-        if first_name_lower.endswith(('o', 'os', 'us', 'is', 'es')):
-            print(f"Debug - Male ending pattern for '{first_name}'")
-            return 'm'
-    
-    print(f"Debug - Cannot determine gender for '{first_name}'")
     return 'na'
 
 def create_categorized_files(output_file):
@@ -176,9 +131,9 @@ def create_categorized_files(output_file):
                 continue
             
             parts = line.split(':')
-            if len(parts) >= 6:  # Should have gender as last field (index 5)
+            if len(parts) >= 6:
                 name_field = parts[3].strip()
-                gender = parts[5].strip()  # Changed from parts[4] to parts[5]
+                gender = parts[5].strip()
                 
                 # Extract first name for categorization
                 clean_name = re.sub(r'[^\w\s]', '', name_field).strip()
@@ -228,10 +183,10 @@ def process_names(input_file, output_file):
             if not line:
                 continue
             
-            # Split by colon and get the 4th field (index 3)
+            # Split by colon and get the 5th field (index 4) - the name field
             parts = line.split(':')
-            if len(parts) >= 4:
-                name_field = parts[3].strip()
+            if len(parts) >= 5:  # Changed from >= 4 to >= 5
+                name_field = parts[4].strip()  # Changed from parts[3] to parts[4]
                 
                 # Extract first name for gender prediction
                 clean_name = re.sub(r'[^\w\s]', '', name_field).strip()
@@ -274,4 +229,10 @@ def process_names(input_file, output_file):
         print(f"Error processing file: {e}")
 
 if __name__ == "__main__":
+    # Test LM Studio connection first
+    if not test_lm_studio_connection():
+        print("\n🛑 Exiting: LM Studio connection failed. Please start LM Studio and load the model first.")
+        sys.exit(1)
+    
+    print("\n🚀 Starting name processing...\n")
     process_names('names.txt', 'names_with_gender.txt')
