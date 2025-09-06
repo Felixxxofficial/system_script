@@ -183,6 +183,14 @@ def process_names(input_file, output_file):
             if not line:
                 continue
             
+            # Handle header line specially
+            if i == 1 and line.startswith('id:login:fol_cnt:post_cnt:name:desc:avatar:'):
+                # Replace 'na' with 'Gender' in header
+                header_line = line.replace(':na', ':Gender')
+                processed_lines.append(header_line)
+                print(f"Header processed: {header_line}")
+                continue
+            
             # Split by colon and get the 5th field (index 4) - the name field
             parts = line.split(':')
             if len(parts) >= 5:  # Changed from >= 4 to >= 5

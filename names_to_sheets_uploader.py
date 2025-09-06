@@ -1,5 +1,6 @@
 import os
 import pickle
+from datetime import datetime  # Add this import
 from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
@@ -42,7 +43,7 @@ class NamesToSheetsUploader:
         return build('sheets', 'v4', credentials=creds)
     
     def parse_names_txt(self, file_path):
-        """Parse the names.txt file with proper handling of colons in descriptions"""
+        """Parse the names.txt file with flexible handling of optional description field"""
         records = []
         
         try:
@@ -56,21 +57,61 @@ class NamesToSheetsUploader:
                         continue
                     
                     try:
-                        # Split by colon, but limit to 8 parts to handle colons in descriptions
-                        parts = line.split(':', 7)  # Changed from 6 to 7
-                        if len(parts) == 8:  # Changed from 7 to 8
-                            records.append({
-                                'id': parts[0].strip(),
-                                'login': parts[1].strip(),
-                                'fol_cnt': parts[2].strip(),
-                                'post_cnt': parts[3].strip(),
-                                'name': parts[4].strip(),
-                                'desc': parts[5].strip(),
-                                'avatar': parts[6].strip(),
-                                'gender': parts[7].strip()  # Added gender field
-                            })
+                        # Split by colon with no limit to handle all cases
+                        parts = line.split(':')
+                        
+                        if len(parts) >= 6:  # Minimum required fields
+                            # Detect format based on number of parts
+                            if len(parts) == 6:  # Format: id:login:fol_cnt:post_cnt:name:avatar (no desc, no gender)
+                                record = {
+                                    'id': parts[0].strip(),
+                                    'login': parts[1].strip(),
+                                    'fol_cnt': parts[2].strip(),
+                                    'post_cnt': parts[3].strip(),
+                                    'name': parts[4].strip(),
+                                    'desc': '',  # Empty description
+                                    'avatar': parts[5].strip(),
+                                    'gender': ''  # Empty gender
+                                }
+                            elif len(parts) == 7:  # Format: id:login:fol_cnt:post_cnt:name:avatar:gender (no desc)
+                                record = {
+                                    'id': parts[0].strip(),
+                                    'login': parts[1].strip(),
+                                    'fol_cnt': parts[2].strip(),
+                                    'post_cnt': parts[3].strip(),
+                                    'name': parts[4].strip(),
+                                    'desc': '',  # Empty description
+                                    'avatar': parts[5].strip(),
+                                    'gender': parts[6].strip()
+                                }
+                            elif len(parts) == 8:  # Format: id:login:fol_cnt:post_cnt:name:desc:avatar:gender (full format)
+                                record = {
+                                    'id': parts[0].strip(),
+                                    'login': parts[1].strip(),
+                                    'fol_cnt': parts[2].strip(),
+                                    'post_cnt': parts[3].strip(),
+                                    'name': parts[4].strip(),
+                                    'desc': parts[5].strip(),
+                                    'avatar': parts[6].strip(),
+                                    'gender': parts[7].strip()
+                                }
+                            else:  # More than 8 parts - assume colons in description
+                                # Rejoin extra parts back into description
+                                desc_parts = parts[5:-2]  # Everything between name and avatar
+                                record = {
+                                    'id': parts[0].strip(),
+                                    'login': parts[1].strip(),
+                                    'fol_cnt': parts[2].strip(),
+                                    'post_cnt': parts[3].strip(),
+                                    'name': parts[4].strip(),
+                                    'desc': ':'.join(desc_parts).strip(),
+                                    'avatar': parts[-2].strip(),
+                                    'gender': parts[-1].strip()
+                                }
+                            
+                            records.append(record)
                         else:
-                            logger.warning(f"Line {line_num}: Invalid format, expected 8 fields but got {len(parts)}")
+                            logger.warning(f"Line {line_num}: Invalid format, expected at least 6 fields but got {len(parts)}")
                     except Exception as e:
                         logger.error(f"Error parsing line {line_num}: {e}")
                         continue
@@ -116,6 +157,8 @@ class NamesToSheetsUploader:
         
         # Convert records to rows
         rows = []
+        current_date = datetime.now().strftime('%Y-%m-%d')  # Get current date in YYYY-MM-DD format
+        
         for record in new_records:
             rows.append([
                 record['id'],
@@ -125,7 +168,8 @@ class NamesToSheetsUploader:
                 record['name'],
                 record['desc'],
                 record['avatar'],
-                record['gender']  # Added gender column
+                record['gender'],
+                current_date  # Add current date as 9th column
             ])
         
         # Append to sheet
@@ -134,7 +178,7 @@ class NamesToSheetsUploader:
         try:
             result = self.service.spreadsheets().values().append(
                 spreadsheetId=self.spreadsheet_id,
-                range=f'{self.sheet_name}!A:G',
+                range=f'{self.sheet_name}!A:I',  # Changed from A:G to A:I to include all 9 columns
                 valueInputOption='RAW',
                 insertDataOption='INSERT_ROWS',
                 body=body
