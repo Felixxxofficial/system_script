@@ -1,0 +1,140 @@
+olle@kolle-virtual-machine:~$ sudo su
+[sudo] password for kolle: 
+root@kolle-virtual-machine:/home/kolle# ifconfig
+enx3acd9372316e: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+        inet 192.168.107.155  netmask 255.255.255.0  broadcast 192.168.107.255
+        inet6 2001:1aef:10a:1fe0:b1ce:6d8b:329d:934e  prefixlen 64  scopeid 0x0<global>
+        inet6 2001:1aef:178:b94:1238:5ff6:9111:52ca  prefixlen 64  scopeid 0x0<global>
+        inet6 2001:1aef:167:db52:e493:6d28:32ce:b6c7  prefixlen 64  scopeid 0x0<global>
+        inet6 fe80::8bf:9e8a:bfbd:9739  prefixlen 64  scopeid 0x20<link>
+        inet6 2001:1aef:d2:99d2:9cc0:c27:b22c:b775  prefixlen 64  scopeid 0x0<global>
+        inet6 2001:1aef:10a:1fe0:bc44:2955:1e05:5cfc  prefixlen 64  scopeid 0x0<global>
+        inet6 2001:1aef:6e:cb94:a444:f700:a9f2:532f  prefixlen 64  scopeid 0x0<global>
+        inet6 2001:1aef:50:2c92:556:2d81:5900:4f58  prefixlen 64  scopeid 0x0<global>
+        inet6 2001:1aef:a7:6412:ca:73b:25f:e0d  prefixlen 64  scopeid 0x0<global>
+        inet6 2001:1aef:a7:6412:22a5:e755:3fb9:d32c  prefixlen 64  scopeid 0x0<global>
+        inet6 2001:1aef:1b7:fd75:85b1:77a2:806b:263a  prefixlen 64  scopeid 0x0<global>
+        inet6 fe80::cf33:f67a:41de:d006  prefixlen 64  scopeid 0x20<link>
+        inet6 2001:1aef:59:140c:5c91:b842:e1a8:b963  prefixlen 64  scopeid 0x0<global>
+        ether 3a:cd:93:72:31:6e  txqueuelen 1000  (Ethernet)
+        RX packets 0  bytes 0 (0.0 B)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 0  bytes 0 (0.0 B)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+
+enxb2b7a3e9b20b: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+        inet 192.168.108.159  netmask 255.255.255.0  broadcast 192.168.108.255
+        inet6 2001:1aef:1a0:31cb:b32d:9e74:2cda:9777  prefixlen 64  scopeid 0x0<global>
+        inet6 2001:1aef:1c8:5edb:e77:32d:a0d:48a  prefixlen 64  scopeid 0x0<global>
+        inet6 2001:1aef:d3:c29a:f139:6575:c093:c5f9  prefixlen 64  scopeid 0x0<global>
+        inet6 2001:1aef:1a0:31cb:7e63:212d:1c4a:1aae  prefixlen 64  scopeid 0x0<global>
+        inet6 2001:1aef:1c8:5edb:1d99:856c:a06a:7fa6  prefixlen 64  scopeid 0x0<global>
+        inet6 fe80::ebba:11cc:fe3:f28c  prefixlen 64  scopeid 0x20<link>
+        inet6 fe80::aea9:bbde:7291:b9d6  prefixlen 64  scopeid 0x20<link>
+        inet6 2001:1aef:1a6:68cf:6d77:52be:e49c:d981  prefixlen 64  scopeid 0x0<global>
+        ether b2:b7:a3:e9:b2:0b  txqueuelen 1000  (Ethernet)
+        RX packets 0  bytes 0 (0.0 B)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 0  bytes 0 (0.0 B)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+
+eth0: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+        inet 192.168.1.103  netmask 255.255.255.0  broadcast 192.168.1.255
+        inet6 fe80::20c:29ff:fea7:31aa  prefixlen 64  scopeid 0x20<link>
+        ether 00:0c:29:a7:31:aa  txqueuelen 1000  (Ethernet)
+        RX packets 4700  bytes 1012543 (1.0 MB)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 6564  bytes 991306 (991.3 KB)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+
+lo: flags=73<UP,LOOPBACK,RUNNING>  mtu 65536
+        inet 127.0.0.1  netmask 255.0.0.0
+        inet6 ::1  prefixlen 128  scopeid 0x10<host>
+        loop  txqueuelen 1000  (Local Loopback)
+        RX packets 10230  bytes 5367625 (5.3 MB)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 10230  bytes 5367625 (5.3 MB)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+
+root@kolle-virtual-machine:/home/kolle# tail -f /opt/xproxy/log/xproxy.log 
+[10/09/2025 11:58:38] WARNING [<frozen xapp.looper.ipchecker_looper>:2] [192.168.107.1] Finish check public ip status: connect failed
+[10/09/2025 11:58:38] INFO    [<xapp.looper.ipchecker_looper>:271] [192.168.107.1] trying to recheck internet (connected but no internet), retry: 1
+[10/09/2025 11:58:38] INFO    [<frozen xapp.looper.ipchecker_looper>:2] [192.168.107.1] Redial for failed connection invoked. Retry time: 8
+[10/09/2025 11:58:38] INFO    [<frozen xapp.global_vars>:2] rotate_ip_with_status True
+[10/09/2025 11:58:38] INFO    [<frozen xapp.xproxy>:2] [192.168.107.1] Beginning resetting on pos: 1
+[10/09/2025 11:58:38] INFO    [<frozen xapp.hilink.xproxy_hilink>:2] [192.168.107.1] Received reset command, reset with mode: 5
+[10/09/2025 11:58:38] INFO    [<frozen xapp.hilink.xproxy_hilink>:2] [192.168.107.1] Re-authentication: 5
+[10/09/2025 11:58:38] INFO    [<frozen xapp.hilink.xproxy_hilink>:2] [192.168.107.1] Authenticating without password....
+[10/09/2025 11:58:38] INFO    [<frozen xapp.hilink.xproxy_hilink>:2] [192.168.107.1] Authenticated successfully
+[10/09/2025 11:58:38] INFO    [<frozen xapp.hilink.xproxy_hilink>:2] [192.168.107.1] Received reset command using change-net-mode strategy
+[10/09/2025 11:58:45] INFO    [<frozen xapp.ddns.scheduler>:2] DDNS: no providers configured
+[10/09/2025 11:58:45] WARNING [<frozen xapp.looper.ipchecker_looper>:2] [192.168.107.1] Finish check public ip status: connect failed
+[10/09/2025 11:58:45] INFO    [<frozen xapp.xproxy>:2] [192.168.107.1] Done resetting...
+[10/09/2025 11:58:46] INFO    [<frozen xapp.proxy.xproxy_proxy>:2] primary > monitor primary proxies working...
+[10/09/2025 11:58:51] WARNING [<frozen xapp.utils.xproxy_requests>:2] Default route failed: Give up after 3 retries with delay 1s on inf: None. The last error retried: (28, 'Resolving timed out after 6561 milliseconds')
+[10/09/2025 11:58:51] INFO    [<frozen xapp.utils.xproxy_requests>:2] [eth0] Trying with interface binding...
+[10/09/2025 11:58:58] WARNING [<frozen xapp.looper.ipchecker_looper>:2] [192.168.107.1] Finish check public ip status: connect failed
+[10/09/2025 11:58:58] WARNING [<frozen xapp.looper.ipchecker_looper>:2] [192.168.107.1] Finish check public ip status: connect failed
+[10/09/2025 11:58:58] INFO    [<xapp.looper.ipchecker_looper>:271] [192.168.107.1] trying to recheck internet (connected but no internet), retry: 0
+[10/09/2025 11:58:58] INFO    [<frozen xapp.proxy.xproxy_proxy>:2] primary > monitor primary proxies working...
+[10/09/2025 11:58:58] WARNING [<frozen xapp.looper.ipchecker_looper>:2] [192.168.108.1] Finish check public ip status: connect failed
+[10/09/2025 11:58:58] WARNING [<frozen xapp.looper.ipchecker_looper>:2] [192.168.108.1] Finish check public ip status: connect failed
+[10/09/2025 11:58:58] INFO    [<xapp.looper.ipchecker_looper>:271] [192.168.108.1] trying to recheck internet (connected but no internet), retry: 1
+[10/09/2025 11:58:58] INFO    [<frozen xapp.looper.ipchecker_looper>:2] [192.168.108.1] Redial for failed connection invoked. Retry time: 4
+[10/09/2025 11:58:58] INFO    [<frozen xapp.global_vars>:2] rotate_ip_with_status True
+[10/09/2025 11:58:58] INFO    [<frozen xapp.xproxy>:2] [192.168.108.1] Beginning resetting on pos: 2
+[10/09/2025 11:58:59] INFO    [<frozen xapp.hilink.xproxy_hilink>:2] [192.168.108.1] Received reset command, reset with mode: 5
+[10/09/2025 11:58:59] INFO    [<frozen xapp.hilink.xproxy_hilink>:2] [192.168.108.1] Re-authentication: 5
+[10/09/2025 11:58:59] INFO    [<frozen xapp.hilink.xproxy_hilink>:2] [192.168.108.1] Authenticating without password....
+[10/09/2025 11:58:59] INFO    [<frozen xapp.hilink.xproxy_hilink>:2] [192.168.108.1] Authenticated successfully
+[10/09/2025 11:58:59] INFO    [<frozen xapp.hilink.xproxy_hilink>:2] [192.168.108.1] Received reset command using change-net-mode strategy
+[10/09/2025 11:59:10] INFO    [<frozen xapp.proxy.xproxy_proxy>:2] primary > monitor primary proxies working...
+[10/09/2025 11:59:12] WARNING [<frozen xapp.looper.ipchecker_looper>:2] [192.168.108.1] Finish check public ip status: connect failed
+[10/09/2025 11:59:12] INFO    [<frozen xapp.xproxy>:2] [192.168.108.1] Done resetting...
+[10/09/2025 11:59:13] WARNING [<frozen xapp.utils.xproxy_requests>:2] [eth0] Failed: Give up after 3 retries with delay 1s on inf: eth0. The last error retried: (28, 'Resolving timed out after 6543 milliseconds')
+[10/09/2025 11:59:13] INFO    [<frozen xapp.utils.xproxy_requests>:2] [enx3acd9372316e] Trying with interface binding...
+[10/09/2025 11:59:15] INFO    [<frozen xapp.ddns.scheduler>:2] DDNS: no providers configured
+[10/09/2025 11:59:16] INFO    [<frozen xapp.utils.xproxy_requests>:2] [enx3acd9372316e] Request completed
+[10/09/2025 11:59:16] INFO    [<frozen xapp.program>:2] Checking system done....
+[10/09/2025 11:59:22] INFO    [<frozen xapp.proxy.xproxy_proxy>:2] primary > monitor primary proxies working...
+[10/09/2025 11:59:24] INFO    [<frozen xapp.db.uptime_stats_db>:2] Updating uptime: on position 2: 0
+[10/09/2025 11:59:25] WARNING [<frozen xapp.looper.ipchecker_looper>:2] [192.168.108.1] Finish check public ip status: connect failed
+[10/09/2025 11:59:26] WARNING [<frozen xapp.looper.ipchecker_looper>:2] [192.168.108.1] Finish check public ip status: connect failed
+[10/09/2025 11:59:26] INFO    [<xapp.looper.ipchecker_looper>:271] [192.168.108.1] trying to recheck internet (connected but no internet), retry: 0
+[10/09/2025 11:59:26] WARNING [<frozen xapp.looper.ipchecker_looper>:2] [192.168.107.1] Finish check public ip status: connect failed
+[10/09/2025 11:59:26] WARNING [<frozen xapp.looper.ipchecker_looper>:2] [192.168.107.1] Finish check public ip status: connect failed
+[10/09/2025 11:59:26] INFO    [<xapp.looper.ipchecker_looper>:271] [192.168.107.1] trying to recheck internet (connected but no internet), retry: 1
+[10/09/2025 11:59:26] INFO    [<frozen xapp.looper.ipchecker_looper>:2] [192.168.107.1] Redial for failed connection invoked. Retry time: 9
+[10/09/2025 11:59:26] INFO    [<frozen xapp.global_vars>:2] rotate_ip_with_status True
+[10/09/2025 11:59:26] INFO    [<frozen xapp.xproxy>:2] [192.168.107.1] Beginning resetting on pos: 1
+[10/09/2025 11:59:26] INFO    [<frozen xapp.hilink.xproxy_hilink>:2] [192.168.107.1] Received reset command, reset with mode: 5
+[10/09/2025 11:59:26] INFO    [<frozen xapp.hilink.xproxy_hilink>:2] [192.168.107.1] Re-authentication: 5
+[10/09/2025 11:59:26] INFO    [<frozen xapp.hilink.xproxy_hilink>:2] [192.168.107.1] Authenticating without password....
+[10/09/2025 11:59:26] INFO    [<frozen xapp.hilink.xproxy_hilink>:2] [192.168.107.1] Authenticated successfully
+[10/09/2025 11:59:26] INFO    [<frozen xapp.hilink.xproxy_hilink>:2] [192.168.107.1] Received reset command using change-net-mode strategy
+[10/09/2025 11:59:33] WARNING [<frozen xapp.looper.ipchecker_looper>:2] [192.168.107.1] Finish check public ip status: connect failed
+[10/09/2025 11:59:33] INFO    [<frozen xapp.xproxy>:2] [192.168.107.1] Done resetting...
+[10/09/2025 11:59:35] INFO    [<frozen xapp.proxy.xproxy_proxy>:2] primary > monitor primary proxies working...
+[10/09/2025 11:59:42] INFO    [<frozen xapp.db.uptime_stats_db>:2] Updating uptime: on position 1: 0
+[10/09/2025 11:59:42] WARNING [<frozen xapp.looper.ipchecker_looper>:2] [192.168.107.1] Finish check public ip status: connect failed
+^Aaaaaaaaaaaaaaaaaaaa[10/09/2025 11:59:45] INFO    [<frozen xapp.ddns.scheduler>:2] DDNS: no providers configured
+aaaaaaaaaaaaaaaaaaa[10/09/2025 11:59:46] WARNING [<frozen xapp.looper.ipchecker_looper>:2] [192.168.108.1] Finish check public ip status: connect failed
+aa[10/09/2025 11:59:46] WARNING [<frozen xapp.looper.ipchecker_looper>:2] [192.168.108.1] Finish check public ip status: connect failed
+a[10/09/2025 11:59:46] INFO    [<xapp.looper.ipchecker_looper>:271] [192.168.108.1] trying to recheck internet (connected but no internet), retry: 1
+[10/09/2025 11:59:46] INFO    [<frozen xapp.looper.ipchecker_looper>:2] [192.168.108.1] Redial for failed connection invoked. Retry time: 5
+[10/09/2025 11:59:46] INFO    [<frozen xapp.global_vars>:2] rotate_ip_with_status True
+[10/09/2025 11:59:46] INFO    [<frozen xapp.xproxy>:2] [192.168.108.1] Beginning resetting on pos: 2
+aaaa[10/09/2025 11:59:46] INFO    [<frozen xapp.program>:2] Starting checking system....
+aaaaaaaaaaaa[10/09/2025 11:59:46] WARNING [<frozen xapp.looper.ipchecker_looper>:2] [192.168.107.1] Finish check public ip status: connect failed
+[10/09/2025 11:59:46] INFO    [<xapp.looper.ipchecker_looper>:271] [192.168.107.1] trying to recheck internet (connected but no internet), retry: 0
+[10/09/2025 11:59:46] INFO    [<frozen xapp.hilink.xproxy_hilink>:2] [192.168.108.1] Received reset command, reset with mode: 5
+[10/09/2025 11:59:46] INFO    [<frozen xapp.hilink.xproxy_hilink>:2] [192.168.108.1] Re-authentication: 5
+[10/09/2025 11:59:46] INFO    [<frozen xapp.hilink.xproxy_hilink>:2] [192.168.108.1] Authenticating without password....
+aaaaaaaaa[10/09/2025 11:59:47] INFO    [<frozen xapp.hilink.xproxy_hilink>:2] [192.168.108.1] Authenticated successfully
+[10/09/2025 11:59:47] INFO    [<frozen xapp.hilink.xproxy_hilink>:2] [192.168.108.1] Received reset command using change-net-mode strategy
+aaaaaaaaaaa[10/09/2025 11:59:47] INFO    [<frozen xapp.proxy.xproxy_proxy>:2] primary > monitor primary proxies working...
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa[10/09/2025 11:59:50] INFO    [<frozen xapp.bootstrap.khronos>:2] trying: {'l': 'US', 'c': [32.779167, -96.808891], 'u': 's1', 'd': 0}
+[10/09/2025 11:59:50] INFO    [<frozen xapp.utils.xproxy_requests>:2] _req starting with default route...
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa[10/09/2025 11:59:59] WARNING [<frozen xapp.looper.ipchecker_looper>:2] [192.168.108.1] Finish check public ip status: connect failed
+[10/09/2025 11:59:59] INFO    [<frozen xapp.xproxy>:2] [192.168.108.1] Done resetting...
+[10/09/2025 11:59:59] INFO    [<frozen xapp.proxy.xproxy_proxy>:2] primary > monitor primary proxies working...

@@ -24,10 +24,12 @@ def process_folders():
         r"C:\Users\felix\OFM\Reels\Images\Normal\Images",
         r"C:\Users\felix\OFM\Reels\Images\Construction\Images",  # New folder for images
         r"C:\Users\felix\OFM\Reels\Images\Gamer\Images",  # New folder for Gamer images
+        r"C:\Users\felix\OFM\Reels\Images\Reddit\Images",  # New folder for Reddit images
         r"C:\Users\felix\OFM\Reels\Images\Emily\Images",  # New folder for Emily's images
         r"C:\Users\felix\OFM\Reels\Images\Emily\Other",  # New folder for Emily\Other
         r"C:\Users\felix\OFM\Reels\Images\Jessy\Images",  # New folder for Jessy's images
-        r"C:\Users\felix\OFM\Reels\Images\Jessy\Austin"  # New folder for Jessy\Austin
+        r"C:\Users\felix\OFM\Reels\Images\Jessy\Austin",  # New folder for Jessy\Austin
+        r"C:\Users\felix\OFM\Reels\Images\Other\Images"  # New folder for Other images
     ]
     
     # Define folders to process for videos
@@ -41,7 +43,8 @@ def process_folders():
         r"C:\Users\felix\OFM\Reels\Images\Emily\Video",  # New folder for Emily's videos
         r"C:\Users\felix\OFM\Reels\Images\Emily\Other",  # New folder for Emily\Other
         r"C:\Users\felix\OFM\Reels\Images\Jessy\Video",  # New folder for Jessy's videos
-        r"C:\Users\felix\OFM\Reels\Images\Jessy\Austin"  # New folder for Jessy\Austin
+        r"C:\Users\felix\OFM\Reels\Images\Jessy\Austin",  # New folder for Jessy\Austin
+        r"C:\Users\felix\OFM\Reels\Images\Other\Videos"  # New folder for Other videos
     ]
     
     # Process each image folder

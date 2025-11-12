@@ -43,7 +43,7 @@ class NamesToSheetsUploader:
         return build('sheets', 'v4', credentials=creds)
     
     def parse_names_txt(self, file_path):
-        """Parse the names.txt file with flexible handling of optional description field"""
+        """Parse the names.txt file with flexible handling of optional fields"""
         records = []
         
         try:
@@ -60,9 +60,20 @@ class NamesToSheetsUploader:
                         # Split by colon with no limit to handle all cases
                         parts = line.split(':')
                         
-                        if len(parts) >= 6:  # Minimum required fields
+                        if len(parts) >= 5:  # Minimum required fields (id:fol_cnt:post_cnt:name:avatar)
                             # Detect format based on number of parts
-                            if len(parts) == 6:  # Format: id:login:fol_cnt:post_cnt:name:avatar (no desc, no gender)
+                            if len(parts) == 5:  # Format: id:fol_cnt:post_cnt:name:avatar (no login, no desc, no gender)
+                                record = {
+                                    'id': parts[0].strip(),
+                                    'login': '',  # Empty login
+                                    'fol_cnt': parts[1].strip(),
+                                    'post_cnt': parts[2].strip(),
+                                    'name': parts[3].strip(),
+                                    'desc': '',  # Empty description
+                                    'avatar': parts[4].strip(),
+                                    'gender': ''  # Empty gender
+                                }
+                            elif len(parts) == 6:  # Format: id:login:fol_cnt:post_cnt:name:avatar (no desc, no gender)
                                 record = {
                                     'id': parts[0].strip(),
                                     'login': parts[1].strip(),
@@ -111,7 +122,7 @@ class NamesToSheetsUploader:
                             
                             records.append(record)
                         else:
-                            logger.warning(f"Line {line_num}: Invalid format, expected at least 6 fields but got {len(parts)}")
+                            logger.warning(f"Line {line_num}: Invalid format, expected at least 5 fields but got {len(parts)}")
                     except Exception as e:
                         logger.error(f"Error parsing line {line_num}: {e}")
                         continue
@@ -136,7 +147,7 @@ class NamesToSheetsUploader:
             # Skip header row and extract login values
             existing_logins = set()
             for row in values[1:]:  # Skip header
-                if row:  # Check if row is not empty
+                if row and row[0].strip():  # Check if row is not empty and login is not empty
                     existing_logins.add(row[0].strip())
             
             logger.info(f"Found {len(existing_logins)} existing login values in sheet")
@@ -146,13 +157,47 @@ class NamesToSheetsUploader:
             logger.error(f"Error getting existing logins: {e}")
             return set()
     
+    def get_existing_ids(self):
+        """Get existing ID values from the sheet to avoid duplicates"""
+        try:
+            # Get the ID column (column A, assuming standard order)
+            result = self.service.spreadsheets().values().get(
+                spreadsheetId=self.spreadsheet_id,
+                range=f'{self.sheet_name}!A:A'
+            ).execute()
+            
+            values = result.get('values', [])
+            # Skip header row and extract ID values
+            existing_ids = set()
+            for row in values[1:]:  # Skip header
+                if row and row[0].strip():  # Check if row is not empty and ID is not empty
+                    existing_ids.add(row[0].strip())
+            
+            logger.info(f"Found {len(existing_ids)} existing ID values in sheet")
+            return existing_ids
+        
+        except Exception as e:
+            logger.error(f"Error getting existing IDs: {e}")
+            return set()
+    
     def append_new_records(self, records):
-        """Append only new records (not already in sheet by login) to the sheet"""
+        """Append only new records (not already in sheet by login or ID) to the sheet"""
         existing_logins = self.get_existing_logins()
-        new_records = [r for r in records if r['login'] not in existing_logins]
+        existing_ids = self.get_existing_ids()
+        
+        new_records = []
+        for r in records:
+            # Check for duplicates: if login exists and is not empty, check by login
+            # Otherwise, check by ID
+            if r['login'].strip():
+                if r['login'] not in existing_logins:
+                    new_records.append(r)
+            else:
+                if r['id'] not in existing_ids:
+                    new_records.append(r)
         
         if not new_records:
-            logger.info("No new records to add - all logins already exist in sheet.")
+            logger.info("No new records to add - all records already exist in sheet.")
             return 0
         
         # Convert records to rows
